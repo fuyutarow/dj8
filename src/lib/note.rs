@@ -59,18 +59,18 @@ pub enum Note {
     // A2 = 45,
     // As2 = 46,
     // B2 = 47,
-    // C3 = 48,
-    // Cs3 = 49,
-    // D3 = 50,
-    // Ds3 = 51,
-    // E3 = 52,
-    // F3 = 53,
-    // Fs3 = 54,
-    // G3 = 55,
-    // Gs3 = 56,
-    // A3 = 57,
-    // As3 = 58,
-    // B3 = 59,
+    C3 = 48,
+    Cs3 = 49,
+    D3 = 50,
+    Ds3 = 51,
+    E3 = 52,
+    F3 = 53,
+    Fs3 = 54,
+    G3 = 55,
+    Gs3 = 56,
+    A3 = 57,
+    As3 = 58,
+    B3 = 59,
     C4 = 60,
     Cs4 = 61,
     D4 = 62,
@@ -191,54 +191,76 @@ pub enum AbcNote {
     // A2 = 45,
     // As2 = 46,
     // B2 =47,
-    // C3 = 48,
-    // Cs3 = 49,
-    // D3 = 50,
-    // Ds3 = 51,
-    // E3 = 52,
-    // F3 = 53,
-    // Fs3 = 54,
-    // G3 = 55,
-    // Gs3=56,
-    // A3 = 57,
-    // As3 = 58,
-    // B3 =59,
+    #[display("C,")]
+    C3 = 48,
+    #[display("^C,")]
+    Cs3 = 49,
+    #[display("D,")]
+    D3 = 50,
+    #[display("^D,")]
+    Ds3 = 51,
+    #[display("E,")]
+    E3 = 52,
+    #[display("F,")]
+    F3 = 53,
+    #[display("^F,")]
+    Fs3 = 54,
+    #[display("G,")]
+    G3 = 55,
+    #[display("^G,")]
+    Gs3 = 56,
+    #[display("A,")]
+    A3 = 57,
+    #[display("^A,")]
+    As3 = 58,
+    #[display("B,")]
+    B3 = 59,
     #[display("C")]
     C4 = 60,
-    // Cs4 = 61,
+    #[display("^C")]
+    Cs4 = 61,
     #[display("D")]
     D4 = 62,
-    // Ds4 = 63,
+    #[display("^D")]
+    Ds4 = 63,
     #[display("E")]
     E4 = 64,
     #[display("F")]
     F4 = 65,
-    // Fs4 = 66,
+    #[display("^F")]
+    Fs4 = 66,
     #[display("G")]
     G4 = 67,
-    // Gs4=68,
+    #[display("^G")]
+    Gs4 = 68,
     #[display("A")]
     A4 = 69,
-    // As4 = 70,
+    #[display("^A")]
+    As4 = 70,
     #[display("B")]
     B4 = 71,
     #[display("c")]
     C5 = 72,
-    // Cs5 = 73,
+    #[display("^c")]
+    Cs5 = 73,
     #[display("d")]
     D5 = 74,
-    // Ds5 = 75,
+    #[display("^d")]
+    Ds5 = 75,
     #[display("e")]
     E5 = 76,
     #[display("f")]
     F5 = 77,
-    // Fs5 = 78,
+    #[display("^f")]
+    Fs5 = 78,
     #[display("g")]
     G5 = 79,
-    // Gs5=80,
+    #[display("^g")]
+    Gs5 = 80,
     #[display("a")]
     A5 = 81,
-    // As5 = 82,
+    #[display("^a")]
+    As5 = 82,
     #[display("b")]
     B5 = 83,
     // C6 = 84,

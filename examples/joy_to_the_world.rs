@@ -5,23 +5,29 @@ use std::time::Duration;
 
 use midir::{MidiOutput, MidiOutputPort};
 
+use cli::note::prelude::*;
+use cli::note::Note;
+
 struct Score {
     notes: Vec<(u8, u64)>,
 }
 
 fn main() {
-    let score = Score {
-        notes: vec![
-            (66, 4),
-            (65, 3),
-            (63, 1),
-            (61, 6),
-            (59, 2),
-            (58, 4),
-            (56, 4),
-            (54, 4),
-        ],
-    };
+    let notes = vec![
+        ("^F", 4),
+        ("F", 3),
+        ("^D", 1),
+        ("^C", 6),
+        ("B,", 2),
+        ("^A,", 4),
+        ("^G,", 4),
+        ("^F,", 4),
+    ]
+    .iter()
+    .map(move |(abc, d)| (Note::from_abc(abc).to_u8().unwrap(), *d as u64))
+    .collect::<Vec<(u8, u64)>>();
+
+    let score = Score { notes };
 
     match run(score) {
         Ok(_) => (),
@@ -43,7 +49,8 @@ fn run(score: Score) -> Result<(), Box<dyn Error>> {
             &out_ports[0]
         }
         _ => {
-            println!("\nAvailable output ports:");
+            println!();
+            println!("Available output ports:");
             for (i, p) in out_ports.iter().enumerate() {
                 println!("{}: {}", i, midi_out.port_name(p).unwrap());
             }
@@ -56,7 +63,8 @@ fn run(score: Score) -> Result<(), Box<dyn Error>> {
                 .ok_or("invalid output port selected")?
         }
     };
-    println!("\nOpening connection");
+    println!();
+    println!("Opening connection");
     let mut conn_out = midi_out.connect(out_port, "midir-test")?;
     println!("Connection open. Listen!");
     {
@@ -78,7 +86,8 @@ fn run(score: Score) -> Result<(), Box<dyn Error>> {
         }
     }
     sleep(Duration::from_millis(150));
-    println!("\nClosing connection");
+    println!();
+    println!("Closing connection");
     // This is optional, the connection would automatically be closed as soon as it goes out of scope
     conn_out.close();
     println!("Connection closed");

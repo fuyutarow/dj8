@@ -1,6 +1,8 @@
 use ghakuf::messages::{Message, MetaEvent, MidiEvent, SysExEvent};
 use ghakuf::reader::{Handler, Reader};
 
+pub mod note;
+
 pub struct BasicHandler<'a> {
     pub messages: &'a mut Vec<Message>,
 }

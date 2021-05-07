@@ -1,18 +1,15 @@
-use std::collections::HashMap;
-use std::str::FromStr;
-
 use anyhow::{bail, Result};
 pub use enum_primitive_derive::Primitive;
 use ghakuf::messages::MidiEvent::{NoteOff, NoteOn};
 use ghakuf::messages::{Message, MidiEvent};
+pub use num_traits::{FromPrimitive, ToPrimitive};
 use parse_display::{Display, FromStr};
 
 pub mod prelude {
     pub use num_traits::{FromPrimitive, ToPrimitive};
 }
 
-#[derive(Debug, PartialEq, Display, FromStr, Primitive)]
-#[display(style = "snake_case")]
+#[derive(Debug, Clone, PartialEq, Display, FromStr, Primitive)]
 pub enum Note {
     // C10 = 0,
     // Cs10 = 1,
@@ -144,37 +141,7 @@ pub enum Note {
     // G9 = 127,
 }
 
-// impl Note {
-//     pub fn to_abc<'a>(&self) -> &'a str {
-//         match &self {
-//             C5 => "C",
-//             D5 => "D",
-//             E5 => "E",
-//             F5 => "F",
-//             G5 => "G",
-//             H5 => "H",
-//             A4 => "A",
-//             B4 => "B",
-//             _ => "",
-//         }
-//     }
-// }
-
-// impl From<AbcNote> for Note {
-//     fn from(s: AbcNote) -> Self {
-//         match s {
-//             AbcNote::C4 => Self::C4,
-//             AbcNote::D4 => Self::C4,
-//             AbcNote::E4 => Self::C4,
-//             AbcNote::F4 => Self::C4,
-//             AbcNote::G4 => Self::C4,
-//             AbcNote::A4 => Self::C4,
-//             AbcNote::B4 => Self::C4,
-//         }
-//     }
-// }
-
-#[derive(Debug, PartialEq, Display, FromStr)]
+#[derive(Debug, PartialEq, Display, FromStr, Primitive)]
 pub enum AbcNote {
     // C10 = 0,
     // Cs10 = 1,
@@ -318,4 +285,29 @@ pub enum AbcNote {
     // F9 = 125,
     // Fs9 = 126,
     // G9 = 127,
+}
+
+impl From<AbcNote> for Note {
+    fn from(note: AbcNote) -> Self {
+        let i = note.to_i32().unwrap();
+        Self::from_i32(i).unwrap()
+    }
+}
+
+impl From<Note> for AbcNote {
+    fn from(note: Note) -> Self {
+        let i = note.to_i32().unwrap();
+        Self::from_i32(i).unwrap()
+    }
+}
+
+impl Note {
+    pub fn from_abc(s: &str) -> Self {
+        let abcnote = s.parse::<AbcNote>().unwrap();
+        Note::from(abcnote)
+    }
+
+    pub fn to_abc(&self) -> String {
+        AbcNote::from(self.clone()).to_string()
+    }
 }

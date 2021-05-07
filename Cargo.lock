@@ -188,7 +188,7 @@ dependencies = [
 
 [[package]]
 name = "dj8"
-version = "0.1.0"
+version = "0.202105.0"
 dependencies = [
  "anyhow",
  "enum-primitive-derive",

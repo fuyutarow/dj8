@@ -2,7 +2,9 @@ use ghakuf::messages::{Message, MetaEvent, MidiEvent, SysExEvent};
 use ghakuf::reader::{Handler, Reader};
 
 pub mod abc_parser;
+pub mod midi_env;
 pub mod note;
+pub mod score;
 
 pub struct BasicHandler<'a> {
     pub messages: &'a mut Vec<Message>,

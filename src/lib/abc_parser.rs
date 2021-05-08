@@ -12,7 +12,7 @@ use nom::{
     IResult, Parser,
 };
 
-use super::note::Pitch;
+use super::note::{Note, Pitch};
 
 pub fn parse_space<'a, E: ParseError<&'a str>>(i: &'a str) -> IResult<&'a str, &'a str, E> {
     let chars = " \t\r\n";
@@ -24,7 +24,7 @@ pub fn parse_basenote<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
     Ok((input, Pitch::from_abc(&used.to_string())))
 }
 
-pub fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
+pub fn parse_pitch<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
     let (input, (accidental, basenote, octave)) = tuple((
         many_m_n(
             0,
@@ -52,9 +52,9 @@ pub fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
 
     let a = accidental.get(0).unwrap_or(&"");
     let o = octave.get(0).unwrap_or(&"");
-    let tune = format!("{}{}{}", a, basenote, o);
-    let note = Pitch::from_abc(&tune);
-    Ok((input, note))
+    let pitch = format!("{}{}{}", a, basenote, o);
+    let p = Pitch::from_abc(&pitch);
+    Ok((input, p))
 }
 
 pub fn parse_duration<'a>(input: &'a str) -> IResult<&'a str, f32> {
@@ -65,8 +65,8 @@ pub fn parse_duration<'a>(input: &'a str) -> IResult<&'a str, f32> {
     Ok((input, duration))
 }
 
-pub fn parse_pitch<'a>(input: &'a str) -> IResult<&'a str, ()> {
-    let (input, note) = tuple((parse_tune, parse_duration))(input)?;
-    dbg!(note);
-    Ok((input, ()))
+pub fn parse_note<'a>(input: &'a str) -> IResult<&'a str, Note> {
+    let (input, (pitch, duration)) = tuple((parse_pitch, parse_duration))(input)?;
+    let note = Note { pitch, duration };
+    Ok((input, note))
 }

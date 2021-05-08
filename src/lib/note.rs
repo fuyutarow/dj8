@@ -333,3 +333,9 @@ impl Pitch {
         AbcPitch::from(self.clone()).to_string()
     }
 }
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Note {
+    pub pitch: Pitch,
+    pub duration: f32,
+}

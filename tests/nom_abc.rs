@@ -1,6 +1,6 @@
 use cli::{
-    abc_parser::{parse_basenote, parse_duration, parse_pitch, parse_space, parse_tune},
-    note::Pitch,
+    abc_parser::{parse_basenote, parse_duration, parse_note, parse_pitch, parse_space},
+    note::{Note, Pitch},
 };
 
 pub enum BasePitch {
@@ -23,19 +23,19 @@ pub enum BasePitch {
 #[test]
 fn test_basenote() {
     let input = "c G A B E";
-    let (input, note) = parse_basenote(input).unwrap();
-    assert_eq!(Pitch::from_abc("c"), note);
+    let (input, pitch) = parse_basenote(input).unwrap();
+    assert_eq!(Pitch::from_abc("c"), pitch);
 }
 
 #[test]
-fn test_tune() {
+fn test_pitch() {
     let input = "A";
-    let (input, note) = parse_tune(input).unwrap();
-    assert_eq!(Pitch::from_abc("A"), note);
+    let (input, pitch) = parse_pitch(input).unwrap();
+    assert_eq!(Pitch::from_abc("A"), pitch);
 
     let input = "^C,";
-    let (input, note) = parse_tune(input).unwrap();
-    assert_eq!(Pitch::from_abc("^C,"), note);
+    let (input, pitch) = parse_pitch(input).unwrap();
+    assert_eq!(Pitch::from_abc("^C,"), pitch);
 }
 
 #[test]
@@ -57,9 +57,15 @@ fn test_duration() {
     assert_eq!(15. / 4., duration);
 }
 
-// #[test]
-// fn test_pitch() {
-//     let input = "D,//";
-//     let (input, pitch) = parse_pitch(input).unwrap();
-//     assert_eq!(2., pitch);
-// }
+#[test]
+fn test_note() {
+    let input = "C,//";
+    let (input, note) = parse_note(input).unwrap();
+    assert_eq!(
+        Note {
+            pitch: Pitch::C3,
+            duration: 1. / 4.,
+        },
+        note
+    );
+}

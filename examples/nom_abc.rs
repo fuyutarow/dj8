@@ -12,25 +12,19 @@ use nom::{
 };
 
 use cli::{
-    abc_parser::{parse_basenote, parse_duration, parse_pitch, parse_space, parse_tune},
+    abc_parser::{parse_basenote, parse_duration, parse_note, parse_pitch, parse_space},
     note::Pitch,
 };
-
-pub fn parse_notes<'a>(input: &'a str) -> IResult<&'a str, ()> {
-    let (input, notes) = many0(parse_basenote)(input)?;
-    dbg!(notes);
-    Ok((input, ()))
-}
 
 fn main() {
     // let input = "C,D//_E3";
     let input = "C,//";
-    let r = parse_pitch(input);
+    let r = parse_note(input);
     dbg!(r);
 
-    let input = "CDEFGABcdefgab";
-    let r = parse_notes(input);
-    dbg!(r);
+    // let input = "CDEFGABcdefgab";
+    // let r = parse_notes(input);
+    // dbg!(r);
 }
 
 // fn abc_notation(input: &str) -> IResult<&str, Color> {

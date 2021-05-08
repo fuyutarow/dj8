@@ -1,7 +1,8 @@
 use anyhow::{bail, Result};
 pub use enum_primitive_derive::Primitive;
-use ghakuf::messages::MidiEvent::{NoteOff, NoteOn};
-use ghakuf::messages::{Message, MidiEvent};
+use ghakuf::messages::Message;
+use ghakuf::messages::Message::MidiEvent;
+use ghakuf::messages::MidiEvent::{ControlChange, NoteOff, NoteOn};
 pub use num_traits::{FromPrimitive, ToPrimitive};
 use parse_display::{Display, FromStr};
 
@@ -350,5 +351,27 @@ impl Note {
 
     pub fn to_pair(&self) -> (u8, u64) {
         (self.pitch as u8, self.duration as u64)
+    }
+
+    pub fn to_messages(&self) -> Vec<Message> {
+        let delta_time = self.duration as u32 * 240 - 1;
+        vec![
+            MidiEvent {
+                delta_time: 1,
+                event: NoteOn {
+                    ch: 0,
+                    note: self.pitch.to_i32().unwrap() as u8,
+                    velocity: 80,
+                },
+            },
+            MidiEvent {
+                delta_time,
+                event: NoteOff {
+                    ch: 0,
+                    note: self.pitch.to_i32().unwrap() as u8,
+                    velocity: 0,
+                },
+            },
+        ]
     }
 }

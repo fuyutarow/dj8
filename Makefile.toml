@@ -1,0 +1,4 @@
+[tasks.play-soviet]
+script = '''
+abc2midi samples/soviet.abc -o samples/soviet.mid && timidity $_
+'''

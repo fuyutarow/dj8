@@ -11,16 +11,14 @@ use nom::{
     IResult, Parser,
 };
 
-use cli::{
-    abc_parser::{parse_basenote, parse_duration, parse_note, parse_pitch, parse_space},
-    note::{Note, Pitch},
-};
+use cli::abc_parser::{parse_basenote, parse_duration, parse_note, parse_pitch, parse_space};
+use cli::note::prelude::*;
+use cli::note::{Note, Pitch};
 
 fn main() {
-
-    // let input = "CDEFGABcdefgab";
-    // let r = parse_notes(input);
-    // dbg!(r);
+    let pitch = Pitch::C4;
+    let i = pitch.to_i32();
+    dbg!(i);
 }
 
 // fn abc_notation(input: &str) -> IResult<&str, Color> {

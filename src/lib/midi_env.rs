@@ -14,3 +14,15 @@ use super::note::Pitch;
 pub struct Score {
     pub notes: Vec<(u8, u64)>,
 }
+
+// pub trait MyMidiEvent {
+//     fn set(
+//         &mut self,
+//         major: Option<u64>,
+//         minor: Option<u64>,
+//         patch: Option<u64>,
+//         pre: Option<String>,
+//         build: Option<String>,
+//     ) -> Self;
+//     fn update(&mut self, major: Option<u64>, minor: Option<u64>, patch: Option<u64>) -> Self;
+// }

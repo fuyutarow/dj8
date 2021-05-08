@@ -2,6 +2,7 @@ use cli::{
     abc_parser::{
         parse_basenote, parse_duration, parse_note, parse_notes, parse_pitch, parse_space,
     },
+    note::Pitch::*,
     note::{Note, Pitch},
 };
 
@@ -92,5 +93,64 @@ fn test_notes() {
             },
         ],
         notes,
+    );
+
+    let input = r##"
+c G3// A// B E/ E/ |\
+A G3// F// G C/ C/ |]
+"##;
+    let (input, notes) = parse_notes(input).unwrap();
+    assert_eq!(
+        vec![
+            Note {
+                pitch: C5,
+                duration: 1.0
+            },
+            Note {
+                pitch: G4,
+                duration: 0.75
+            },
+            Note {
+                pitch: A4,
+                duration: 0.25
+            },
+            Note {
+                pitch: B4,
+                duration: 1.0
+            },
+            Note {
+                pitch: E4,
+                duration: 0.5
+            },
+            Note {
+                pitch: E4,
+                duration: 0.5
+            },
+            Note {
+                pitch: A4,
+                duration: 1.0
+            },
+            Note {
+                pitch: G4,
+                duration: 0.75
+            },
+            Note {
+                pitch: F4,
+                duration: 0.25
+            },
+            Note {
+                pitch: G4,
+                duration: 1.0
+            },
+            Note {
+                pitch: C4,
+                duration: 0.5
+            },
+            Note {
+                pitch: C4,
+                duration: 0.5
+            }
+        ],
+        notes
     );
 }

@@ -71,7 +71,12 @@ pub fn parse_note<'a>(input: &'a str) -> IResult<&'a str, Note> {
     Ok((input, note))
 }
 
+pub fn parse_skip_char<'a, E: ParseError<&'a str>>(i: &'a str) -> IResult<&'a str, &'a str, E> {
+    let chars = " \t\r\n|\\";
+    take_while(move |c| chars.contains(c))(i)
+}
+
 pub fn parse_notes<'a>(input: &'a str) -> IResult<&'a str, Vec<Note>> {
-    let (input, mut notes) = many0(preceded(parse_space, parse_note))(input)?;
+    let (input, mut notes) = many0(preceded(parse_skip_char, parse_note))(input)?;
     Ok((input, notes))
 }

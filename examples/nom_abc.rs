@@ -12,17 +12,11 @@ use nom::{
 };
 
 use cli::{
-    abc_parser::{
-        parse_basenote, parse_duration, parse_note, parse_notes, parse_pitch, parse_space,
-    },
-    note::Pitch,
+    abc_parser::{parse_basenote, parse_duration, parse_note, parse_pitch, parse_space},
+    note::{Note, Pitch},
 };
 
 fn main() {
-    // let input = "C,D//_E3";
-    let input = "  C,//A3   D";
-    let r = parse_notes(input);
-    dbg!(r);
 
     // let input = "CDEFGABcdefgab";
     // let r = parse_notes(input);

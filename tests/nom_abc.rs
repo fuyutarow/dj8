@@ -1,11 +1,12 @@
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_till, take_while, take_while_m_n},
-    character::complete::{alpha1, char, digit1, multispace0, multispace1, one_of},
+    character::complete::{digit1, multispace0, multispace1, one_of},
     character::is_alphabetic,
     combinator::{cut, map, map_res, opt},
     error::{context, ParseError, VerboseError},
     multi::{many0, many_m_n},
+    number::complete::float,
     sequence::{delimited, preceded, terminated, tuple},
     IResult, Parser,
 };
@@ -131,4 +132,26 @@ fn test_tune() {
     let input = "^C,";
     let (input, note) = parse_tune(input).unwrap();
     assert_eq!(Note::from_abc("^C,"), note);
+}
+
+#[test]
+fn test_duration() {
+    fn parse_duration<'a>(input: &'a str) -> IResult<&'a str, f32> {
+        let (input, (number, slashes)) = tuple((many_m_n(0, 1, float), many0(tag("/"))))(input)?;
+        let n = number.get(0).unwrap_or(&1.);
+        let duration = 2. * n / slashes.len() as f32;
+        Ok((input, duration))
+    }
+
+    let input = "/";
+    let (input, duration) = parse_duration(input).unwrap();
+    assert_eq!(2., duration);
+
+    let input = "3/";
+    let (input, duration) = parse_duration(input).unwrap();
+    assert_eq!(6., duration);
+
+    let input = "15//";
+    let (input, duration) = parse_duration(input).unwrap();
+    assert_eq!(15., duration);
 }

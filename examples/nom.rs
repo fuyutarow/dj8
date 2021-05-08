@@ -2,11 +2,12 @@ use anyhow::bail;
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_till, take_while, take_while_m_n},
-    character::complete::{alpha1, char, digit0, digit1, multispace0, multispace1, one_of},
+    character::complete::{multispace0, multispace1, one_of},
     character::is_alphabetic,
     combinator::{cut, map, map_res, opt},
     error::{context, ParseError, VerboseError},
     multi::{many0, many_m_n},
+    number::complete::float,
     sequence::{delimited, preceded, terminated, tuple},
     IResult, Parser,
 };
@@ -60,12 +61,12 @@ fn parse_space<'a, E: ParseError<&'a str>>(i: &'a str) -> IResult<&'a str, &'a s
 fn main() {
     // fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, (Vec<&str>, &str, &str)> {
     fn parse_duration<'a>(input: &'a str) -> IResult<&'a str, ()> {
-        let (input, used) =
-            tuple((many_m_n(0, 1, tuple((digit0, many0(tag("/"))))), tag("/")))(input)?;
-        // Ok((input, Note::from_abc(&used.to_string())))
+        let (input, (number, slashes)) = tuple((many_m_n(0, 1, float), many0(tag("/"))))(input)?;
 
-        dbg!(used);
-        // dbg!(&accidental, &basenote, &octave);
+        let n = number.get(0).unwrap_or(&1.);
+        let duration = 2. * n * slashes.len() as f32;
+        dbg!(duration);
+
         // let a = accidental.get(0).unwrap_or(&"");
         // let o = octave.get(0).unwrap_or(&"");
         // let tune = format!("{}{}{}", a, basenote, o);
@@ -73,7 +74,15 @@ fn main() {
         Ok((input, ()))
     }
 
-    let input = "3//";
+    let input = "3///";
+    let (input, note) = parse_duration(input).unwrap();
+    dbg!(note);
+
+    let input = "/";
+    let (input, note) = parse_duration(input).unwrap();
+    dbg!(note);
+
+    let input = "3/";
     let (input, note) = parse_duration(input).unwrap();
     dbg!(note);
     // dbg!(used);

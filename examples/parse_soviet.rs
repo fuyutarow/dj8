@@ -9,7 +9,7 @@ fn main() {
     let mut read_messages: Vec<Message> = Vec::new();
 
     {
-        let path = Path::new("samples/soviet.mid");
+        let path = Path::new("data/soviet.mid");
         let mut handler = BasicHandler {
             messages: &mut read_messages,
         };
@@ -21,7 +21,7 @@ fn main() {
     // println!("{:?}", &read_messages);
 
     {
-        let path = Path::new("samples/example.mid");
+        let path = Path::new("data/example.mid");
         let mut writer = Writer::new();
         writer.running_status(true);
         for message in &read_messages {

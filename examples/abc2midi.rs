@@ -30,7 +30,7 @@ e d3// c// d B/ G/ | c B3// A// B E/ E/ | A G/ F/ G C/ C/ | c B3// A// G2 |]
     dbg!(&messages);
 
     {
-        let path = Path::new("samples/example.mid");
+        let path = Path::new("data/example.mid");
         let mut writer = Writer::new();
         writer.running_status(true);
         for message in &messages {

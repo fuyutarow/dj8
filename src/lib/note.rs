@@ -9,7 +9,7 @@ pub mod prelude {
     pub use num_traits::{FromPrimitive, ToPrimitive};
 }
 
-#[derive(Debug, Clone, PartialEq, Display, FromStr, Primitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Display, FromStr, Primitive)]
 pub enum Pitch {
     // C10 = 0,
     // Cs10 = 1,
@@ -334,8 +334,21 @@ impl Pitch {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Note {
     pub pitch: Pitch,
     pub duration: f32,
+}
+
+impl Note {
+    pub fn tempo(&self, t: f32) -> Self {
+        Self {
+            pitch: self.pitch,
+            duration: self.duration * t,
+        }
+    }
+
+    pub fn to_pair(&self) -> (u8, u64) {
+        (self.pitch as u8, self.duration as u64)
+    }
 }

@@ -5,6 +5,7 @@ pub mod abc_parser;
 pub mod midi_env;
 pub mod note;
 pub mod score;
+pub mod utils;
 
 pub struct BasicHandler<'a> {
     pub messages: &'a mut Vec<Message>,

@@ -6,7 +6,6 @@ use std::time::Duration;
 use midir::{MidiOutput, MidiOutputPort};
 
 use cli::abc_parser::parse_notes;
-// use cli::midi_env::setup_midi_conn_out;
 use cli::note::prelude::*;
 use cli::note::{Note, Pitch};
 use cli::score::Score;
@@ -32,7 +31,6 @@ e d3// c// d B/ G/ | c B3// A// B E/ E/ | A G/ F/ G C/ C/ | c B3// A// G2 |]
 
 fn run(score: Score) -> Result<(), Box<dyn Error>> {
     let midi_out = MidiOutput::new("My Test Output")?;
-    // Get an output port (read from console if multiple are available)
     let out_ports = midi_out.ports();
     let out_port: &MidiOutputPort = match out_ports.len() {
         0 => return Err("no output port found".into()),
@@ -68,7 +66,6 @@ fn run(score: Score) -> Result<(), Box<dyn Error>> {
     sleep(Duration::from_millis(150));
     println!();
     println!("Closing connection");
-    // This is optional, the connection would automatically be closed as soon as it goes out of scope
     conn_out.close();
     println!("Connection closed");
     Ok(())

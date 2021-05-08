@@ -5,21 +5,23 @@ use nom::{
     character::is_alphabetic,
     combinator::{cut, map, map_res, opt},
     error::{context, ParseError, VerboseError},
-    multi::{many0, many_m_n},
+    multi::{many0, many_m_n, separated_list0},
     number::complete::float,
     sequence::{delimited, preceded, terminated, tuple},
     IResult, Parser,
 };
 
 use cli::{
-    abc_parser::{parse_basenote, parse_duration, parse_note, parse_pitch, parse_space},
+    abc_parser::{
+        parse_basenote, parse_duration, parse_note, parse_notes, parse_pitch, parse_space,
+    },
     note::Pitch,
 };
 
 fn main() {
     // let input = "C,D//_E3";
-    let input = "C,//";
-    let r = parse_note(input);
+    let input = "  C,//A3   D";
+    let r = parse_notes(input);
     dbg!(r);
 
     // let input = "CDEFGABcdefgab";

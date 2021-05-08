@@ -70,3 +70,8 @@ pub fn parse_note<'a>(input: &'a str) -> IResult<&'a str, Note> {
     let note = Note { pitch, duration };
     Ok((input, note))
 }
+
+pub fn parse_notes<'a>(input: &'a str) -> IResult<&'a str, Vec<Note>> {
+    let (input, mut notes) = many0(preceded(parse_space, parse_note))(input)?;
+    Ok((input, notes))
+}

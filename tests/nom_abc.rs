@@ -1,5 +1,7 @@
 use cli::{
-    abc_parser::{parse_basenote, parse_duration, parse_note, parse_pitch, parse_space},
+    abc_parser::{
+        parse_basenote, parse_duration, parse_note, parse_notes, parse_pitch, parse_space,
+    },
     note::{Note, Pitch},
 };
 
@@ -67,5 +69,28 @@ fn test_note() {
             duration: 1. / 4.,
         },
         note
+    );
+}
+
+#[test]
+fn test_notes() {
+    let input = "  C,//A3   D";
+    let (input, notes) = parse_notes(input).unwrap();
+    assert_eq!(
+        vec![
+            Note {
+                pitch: Pitch::C3,
+                duration: 0.25,
+            },
+            Note {
+                pitch: Pitch::A4,
+                duration: 3.0,
+            },
+            Note {
+                pitch: Pitch::D4,
+                duration: 1.0,
+            },
+        ],
+        notes,
     );
 }

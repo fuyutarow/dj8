@@ -1,73 +1,60 @@
-use cli::{
-    abc_parser::{parse_basenote, parse_duration, parse_space, parse_tune},
-    note::{prelude::*, Note},
+use nom::{
+    branch::alt,
+    bytes::complete::{tag, take_till, take_while, take_while_m_n},
+    character::complete::{digit1, multispace0, multispace1, one_of},
+    character::is_alphabetic,
+    combinator::{cut, map, map_res, opt},
+    error::{context, ParseError, VerboseError},
+    multi::{many0, many_m_n},
+    number::complete::float,
+    sequence::{delimited, preceded, terminated, tuple},
+    IResult, Parser,
 };
 
-pub enum BaseNote {
-    C,
-    D,
-    E,
-    F,
-    G,
-    A,
-    B,
-    c,
-    d,
-    e,
-    f,
-    g,
-    a,
-    b,
-}
+use cli::{
+    abc_parser::{parse_basenote, parse_duration, parse_pitch, parse_space, parse_tune},
+    note::Note,
+};
 
-#[test]
-fn digit1_test() {
-    let s = "63abc";
-    let result: IResult<&str, &str> = digit1(&s);
-    let (no_used, used) = result.unwrap();
-    assert_eq!("63", used);
-    assert_eq!("abc", no_used);
-}
-
-#[test]
-fn test_basenotes() {
-    let mut notes = vec![];
-    fn parse_basenotes(input: &str) -> IResult<&str, Color> {
-        while input.len() > 0 {
-            let (input, BaseNote): IResult<&str, &str> = one_of("CDEFGABcdefgab")(&input)?;
-            let note = Note::from_abc(used);
-            notes.push(note);
-        }
-    }
-    assert_eq!("abc", notes);
-}
-
-#[test]
-fn test_basenote() {
-    let s = "c G A B E";
-    let result: IResult<&str, &str> = one_of("CDEFGABcdefgab")(&s);
-    let (s, used) = result.unwrap();
-    assert_eq!("c", used);
-    let result: IResult<&str, &str> = one_of("CDEFGABcdefgab")(&s);
-    let (no_used, used) = result.unwrap();
-    assert_eq!("G", used);
+pub fn parse_notes<'a>(input: &'a str) -> IResult<&'a str, ()> {
+    let (input, notes) = many0(parse_basenote)(input)?;
+    dbg!(notes);
+    Ok((input, ()))
 }
 
 fn main() {
-    assert_eq!(
-        abc_notation(
-            // c G3// A// B E/ E/ | A G3// F// G C/ C/ | D D/ E/ F F/ G/ | A B/ c/ d3/ G/
-            r#"
-c G A B E
-"#
-        ),
-        Ok((
-            "",
-            Color {
-                red: 47,
-                green: 20,
-                blue: 223,
-            }
-        ))
-    );
+    // let input = "C,D//_E3";
+    let input = "C,//";
+    let r = parse_pitch(input);
+    dbg!(r);
+
+    let input = "CDEFGABcdefgab";
+    let r = parse_notes(input);
+    dbg!(r);
 }
+
+// fn abc_notation(input: &str) -> IResult<&str, Color> {
+//     let (input, _) = parse_space(input)?;
+//     let (input, (red, green, blue)) = tuple((hex_primary, hex_primary, hex_primary))(input)?;
+
+//     Ok((input, Color { red, green, blue }))
+// }
+
+// fn _main() {
+//     assert_eq!(
+//         abc_notation(
+//             // c G3// A// B E/ E/ | A G3// F// G C/ C/ | D D/ E/ F F/ G/ | A B/ c/ d3/ G/
+//             r#"
+// c G A B E
+// "#
+//         ),
+//         Ok((
+//             "",
+//             Color {
+//                 red: 47,
+//                 green: 20,
+//                 blue: 223,
+//             }
+//         ))
+//     );
+// }

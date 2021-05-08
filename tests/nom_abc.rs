@@ -40,15 +40,34 @@ fn test_tune() {
 
 #[test]
 fn test_duration() {
-    let input = "/";
+    let input = "2";
     let (input, duration) = parse_duration(input).unwrap();
     assert_eq!(2., duration);
 
+    let input = "/";
+    let (input, duration) = parse_duration(input).unwrap();
+    assert_eq!(0.5, duration);
+
     let input = "3/";
     let (input, duration) = parse_duration(input).unwrap();
-    assert_eq!(6., duration);
+    assert_eq!(1.5, duration);
 
     let input = "15//";
     let (input, duration) = parse_duration(input).unwrap();
-    assert_eq!(15., duration);
+    assert_eq!(15. / 4., duration);
 }
+
+// #[test]
+// fn test_pitch() {
+//     let input = "D,//";
+//     let (input, duration) = parse_duration(input).unwrap();
+//     assert_eq!(2., duration);
+
+//     let input = "3/";
+//     let (input, duration) = parse_duration(input).unwrap();
+//     assert_eq!(6., duration);
+
+//     let input = "15//";
+//     let (input, duration) = parse_duration(input).unwrap();
+//     assert_eq!(15., duration);
+// }

@@ -60,6 +60,13 @@ pub fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Note> {
 pub fn parse_duration<'a>(input: &'a str) -> IResult<&'a str, f32> {
     let (input, (number, slashes)) = tuple((many_m_n(0, 1, float), many0(tag("/"))))(input)?;
     let n = number.get(0).unwrap_or(&1.);
-    let duration = 2. * n / slashes.len() as f32;
+    let l = (1 << slashes.len()) as f32;
+    let duration = n / l;
     Ok((input, duration))
+}
+
+pub fn parse_pitch<'a>(input: &'a str) -> IResult<&'a str, ()> {
+    let (input, note) = tuple((parse_tune, parse_duration))(input)?;
+    dbg!(note);
+    Ok((input, ()))
 }

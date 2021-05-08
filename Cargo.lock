@@ -215,7 +215,7 @@ dependencies = [
 
 [[package]]
 name = "dj8"
-version = "0.202105.0"
+version = "0.202105.1"
 dependencies = [
  "abc-parser",
  "anyhow",

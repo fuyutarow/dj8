@@ -3,6 +3,7 @@ use structopt::StructOpt;
 
 use ghakuf::messages::Message;
 use ghakuf::reader::Reader;
+use ghakuf::writer::Writer;
 
 mod lib;
 use lib::abc_parser::parse_notes;
@@ -20,18 +21,18 @@ enum Opt {
         fpath: PathBuf,
 
         /// [possible values: midi, json]
-        #[structopt(short, long)]
+        #[structopt(short, long, default_value = "midi")]
         to: String,
 
         /// [possible values: midi, json]
         #[structopt(short, long)]
-        to: String,
+        out: Option<String>,
     },
 }
 
 fn main() {
     match Opt::from_args() {
-        Opt::From { fpath, to } => {
+        Opt::From { fpath, to, out } => {
             let messages = match fpath.extension() {
                 Some(s) if s == "mid" => {
                     let mut read_messages: Vec<Message> = Vec::new();
@@ -63,7 +64,18 @@ fn main() {
                 }
                 _ => vec![],
             };
-            dbg!(messages);
+
+            if let Some(out_path) = out {
+                let path = Path::new(&out_path);
+                let mut writer = Writer::new();
+                writer.running_status(true);
+                for message in &messages {
+                    writer.push(&message);
+                }
+                writer.write(&path);
+            } else {
+                dbg!(messages);
+            }
         }
     }
 }

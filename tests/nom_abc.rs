@@ -5,7 +5,7 @@ use nom::{
     character::is_alphabetic,
     combinator::{cut, map, map_res, opt},
     error::{context, ParseError, VerboseError},
-    multi::many0,
+    multi::{many0, many_m_n},
     sequence::{delimited, preceded, terminated, tuple},
     IResult, Parser,
 };
@@ -38,11 +38,6 @@ fn digit1_test() {
     assert_eq!("abc", no_used);
 }
 
-fn parse_space<'a, E: ParseError<&'a str>>(i: &'a str) -> IResult<&'a str, &'a str, E> {
-    let chars = " \t\r\n";
-    take_while(move |c| chars.contains(c))(i)
-}
-
 #[test]
 fn test_basenote() {
     fn parse_basenote<'a>(input: &'a str) -> IResult<&'a str, Note> {
@@ -52,6 +47,11 @@ fn test_basenote() {
     let input = "c G A B E";
     let (input, note) = parse_basenote(input).unwrap();
     assert_eq!(Note::from_abc("c"), note);
+}
+
+fn parse_space<'a, E: ParseError<&'a str>>(i: &'a str) -> IResult<&'a str, &'a str, E> {
+    let chars = " \t\r\n";
+    take_while(move |c| chars.contains(c))(i)
 }
 
 #[test]
@@ -87,4 +87,48 @@ fn test_basenotes() {
 
     let (input, note) = parse_basenote(input).unwrap();
     assert_eq!(Note::from_abc("A"), note);
+}
+
+#[test]
+fn test_tune() {
+    fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Note> {
+        let (input, (accidental, basenote, octave)) = tuple((
+            many_m_n(
+                0,
+                1,
+                alt((tag("^"), tag("^^"), tag("_"), tag("__"), tag("="))),
+            ),
+            alt((
+                tag("C"),
+                tag("D"),
+                tag("E"),
+                tag("F"),
+                tag("G"),
+                tag("A"),
+                tag("B"),
+                tag("c"),
+                tag("d"),
+                tag("e"),
+                tag("f"),
+                tag("g"),
+                tag("a"),
+                tag("b"),
+            )),
+            many_m_n(0, 1, alt((tag(","), tag("'")))),
+        ))(input)?;
+
+        let a = accidental.get(0).unwrap_or(&"");
+        let o = octave.get(0).unwrap_or(&"");
+        let tune = format!("{}{}{}", a, basenote, o);
+        let note = Note::from_abc(&tune);
+        Ok((input, note))
+    }
+
+    let input = "A";
+    let (input, note) = parse_tune(input).unwrap();
+    assert_eq!(Note::from_abc("A"), note);
+
+    let input = "^C,";
+    let (input, note) = parse_tune(input).unwrap();
+    assert_eq!(Note::from_abc("^C,"), note);
 }

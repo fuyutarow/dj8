@@ -12,19 +12,19 @@ use nom::{
     IResult, Parser,
 };
 
-use super::note::Note;
+use super::note::Pitch;
 
 pub fn parse_space<'a, E: ParseError<&'a str>>(i: &'a str) -> IResult<&'a str, &'a str, E> {
     let chars = " \t\r\n";
     take_while(move |c| chars.contains(c))(i)
 }
 
-pub fn parse_basenote<'a>(input: &'a str) -> IResult<&'a str, Note> {
+pub fn parse_basenote<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
     let (input, used) = one_of("CDEFGABcdefgab")(input)?;
-    Ok((input, Note::from_abc(&used.to_string())))
+    Ok((input, Pitch::from_abc(&used.to_string())))
 }
 
-pub fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Note> {
+pub fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
     let (input, (accidental, basenote, octave)) = tuple((
         many_m_n(
             0,
@@ -53,7 +53,7 @@ pub fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Note> {
     let a = accidental.get(0).unwrap_or(&"");
     let o = octave.get(0).unwrap_or(&"");
     let tune = format!("{}{}{}", a, basenote, o);
-    let note = Note::from_abc(&tune);
+    let note = Pitch::from_abc(&tune);
     Ok((input, note))
 }
 

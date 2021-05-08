@@ -6,7 +6,7 @@ use std::time::Duration;
 use midir::{MidiOutput, MidiOutputPort};
 
 use cli::note::prelude::*;
-use cli::note::Note;
+use cli::note::Pitch;
 
 struct Score {
     notes: Vec<(u8, u64)>,
@@ -24,7 +24,7 @@ fn main() {
         ("^F,", 4),
     ]
     .iter()
-    .map(move |(abc, d)| (Note::from_abc(abc).to_u8().unwrap(), *d as u64))
+    .map(move |(abc, d)| (Pitch::from_abc(abc).to_u8().unwrap(), *d as u64))
     .collect::<Vec<(u8, u64)>>();
 
     let score = Score { notes };

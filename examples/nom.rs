@@ -12,7 +12,7 @@ use nom::{
     IResult, Parser,
 };
 
-use cli::note::Note;
+use cli::note::Pitch;
 
 #[derive(Debug, PartialEq)]
 pub struct Color {
@@ -57,7 +57,7 @@ fn parse_space<'a, E: ParseError<&'a str>>(i: &'a str) -> IResult<&'a str, &'a s
     let chars = " \t\r\n";
     take_while(move |c| chars.contains(c))(i)
 }
-fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Note> {
+fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
     let (input, (accidental, basenote, octave)) = tuple((
         many_m_n(
             0,
@@ -86,7 +86,7 @@ fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Note> {
     let a = accidental.get(0).unwrap_or(&"");
     let o = octave.get(0).unwrap_or(&"");
     let tune = format!("{}{}{}", a, basenote, o);
-    let note = Note::from_abc(&tune);
+    let note = Pitch::from_abc(&tune);
     Ok((input, note))
 }
 
@@ -109,7 +109,7 @@ fn main() {
         // let a = accidental.get(0).unwrap_or(&"");
         // let o = octave.get(0).unwrap_or(&"");
         // let tune = format!("{}{}{}", a, basenote, o);
-        // let note = Note::from_abc(&tune);
+        // let note = Pitch::from_abc(&tune);
         Ok((input, ()))
     }
 
@@ -125,5 +125,5 @@ fn main() {
     let (input, note) = parse_duration(input).unwrap();
     dbg!(note);
     // dbg!(used);
-    // assert_eq!(Note::from_abc("c"), note);
+    // assert_eq!(Pitch::from_abc("c"), note);
 }

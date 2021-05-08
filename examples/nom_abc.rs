@@ -13,7 +13,7 @@ use nom::{
 
 use cli::{
     abc_parser::{parse_basenote, parse_duration, parse_pitch, parse_space, parse_tune},
-    note::Note,
+    note::Pitch,
 };
 
 pub fn parse_notes<'a>(input: &'a str) -> IResult<&'a str, ()> {

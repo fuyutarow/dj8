@@ -10,7 +10,7 @@ pub mod prelude {
 }
 
 #[derive(Debug, Clone, PartialEq, Display, FromStr, Primitive)]
-pub enum Note {
+pub enum Pitch {
     // C10 = 0,
     // Cs10 = 1,
     // D10 = 2,
@@ -142,7 +142,7 @@ pub enum Note {
 }
 
 #[derive(Debug, PartialEq, Display, FromStr, Primitive)]
-pub enum AbcNote {
+pub enum AbcPitch {
     // C10 = 0,
     // Cs10 = 1,
     // D10 = 2,
@@ -309,27 +309,27 @@ pub enum AbcNote {
     // G9 = 127,
 }
 
-impl From<AbcNote> for Note {
-    fn from(note: AbcNote) -> Self {
-        let i = note.to_i32().unwrap();
+impl From<AbcPitch> for Pitch {
+    fn from(v: AbcPitch) -> Self {
+        let i = v.to_i32().unwrap();
         Self::from_i32(i).unwrap()
     }
 }
 
-impl From<Note> for AbcNote {
-    fn from(note: Note) -> Self {
-        let i = note.to_i32().unwrap();
+impl From<Pitch> for AbcPitch {
+    fn from(v: Pitch) -> Self {
+        let i = v.to_i32().unwrap();
         Self::from_i32(i).unwrap()
     }
 }
 
-impl Note {
+impl Pitch {
     pub fn from_abc(s: &str) -> Self {
-        let abcnote = s.parse::<AbcNote>().unwrap();
-        Note::from(abcnote)
+        let abcpitch = s.parse::<AbcPitch>().unwrap();
+        Pitch::from(abcpitch)
     }
 
     pub fn to_abc(&self) -> String {
-        AbcNote::from(self.clone()).to_string()
+        AbcPitch::from(self.clone()).to_string()
     }
 }

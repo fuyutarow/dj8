@@ -1,11 +1,7 @@
-use nom::{
-    bytes::complete::{tag, take_while_m_n},
-    combinator::map_res,
-    sequence::tuple,
-    IResult,
+use cli::{
+    abc_parser::{parse_basenote, parse_duration, parse_space, parse_tune},
+    note::{prelude::*, Note},
 };
-
-use cli::note::{prelude::*, Note};
 
 pub enum BaseNote {
     C,
@@ -55,48 +51,6 @@ fn test_basenote() {
     let result: IResult<&str, &str> = one_of("CDEFGABcdefgab")(&s);
     let (no_used, used) = result.unwrap();
     assert_eq!("G", used);
-}
-
-// #[test]
-// fn tune1() {
-//     let op_kind_parser = map(alt((char('*'), char('/'))), |op_char| match op_char {
-//         '*' => OpKind::Mul,
-//         '/' => OpKind::Div,
-//         _ => panic!("error!"),
-//     });
-// }
-
-#[derive(Debug, PartialEq)]
-pub struct Color {
-    pub red: u8,
-    pub green: u8,
-    pub blue: u8,
-}
-
-fn from_hex(input: &str) -> Result<u8, std::num::ParseIntError> {
-    u8::from_str_radix(input, 16)
-}
-
-fn is_hex_digit(c: char) -> bool {
-    c.is_digit(16)
-}
-
-fn hex_primary(input: &str) -> IResult<&str, u8> {
-    map_res(take_while_m_n(2, 2, is_hex_digit), from_hex)(input)
-}
-
-fn abc_notation(input: &str) -> IResult<&str, Color> {
-    let (input, _) = tag("#")(input)?;
-    let (input, (red, green, blue)) = tuple((hex_primary, hex_primary, hex_primary))(input)?;
-
-    Ok((input, Color { red, green, blue }))
-}
-
-fn hex_color(input: &str) -> IResult<&str, Color> {
-    let (input, _) = tag("#")(input)?;
-    let (input, (red, green, blue)) = tuple((hex_primary, hex_primary, hex_primary))(input)?;
-
-    Ok((input, Color { red, green, blue }))
 }
 
 fn main() {

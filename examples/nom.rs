@@ -57,6 +57,45 @@ fn parse_space<'a, E: ParseError<&'a str>>(i: &'a str) -> IResult<&'a str, &'a s
     let chars = " \t\r\n";
     take_while(move |c| chars.contains(c))(i)
 }
+fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, Note> {
+    let (input, (accidental, basenote, octave)) = tuple((
+        many_m_n(
+            0,
+            1,
+            alt((tag("^"), tag("^^"), tag("_"), tag("__"), tag("="))),
+        ),
+        alt((
+            tag("C"),
+            tag("D"),
+            tag("E"),
+            tag("F"),
+            tag("G"),
+            tag("A"),
+            tag("B"),
+            tag("c"),
+            tag("d"),
+            tag("e"),
+            tag("f"),
+            tag("g"),
+            tag("a"),
+            tag("b"),
+        )),
+        many_m_n(0, 1, alt((tag(","), tag("'")))),
+    ))(input)?;
+
+    let a = accidental.get(0).unwrap_or(&"");
+    let o = octave.get(0).unwrap_or(&"");
+    let tune = format!("{}{}{}", a, basenote, o);
+    let note = Note::from_abc(&tune);
+    Ok((input, note))
+}
+
+fn parse_duration<'a>(input: &'a str) -> IResult<&'a str, f32> {
+    let (input, (number, slashes)) = tuple((many_m_n(0, 1, float), many0(tag("/"))))(input)?;
+    let n = number.get(0).unwrap_or(&1.);
+    let duration = 2. * n / slashes.len() as f32;
+    Ok((input, duration))
+}
 
 fn main() {
     // fn parse_tune<'a>(input: &'a str) -> IResult<&'a str, (Vec<&str>, &str, &str)> {

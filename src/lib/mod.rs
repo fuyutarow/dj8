@@ -1,6 +1,7 @@
 use ghakuf::messages::{Message, MetaEvent, MidiEvent, SysExEvent};
 use ghakuf::reader::{Handler, Reader};
 
+pub mod abc_parser;
 pub mod note;
 
 pub struct BasicHandler<'a> {

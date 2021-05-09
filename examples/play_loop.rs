@@ -18,11 +18,10 @@ c G3// A// B E/ E/ | A G3// F// G C/ C/ | D D/ E/ F F/ G/ | A B/ c/ d3/ G/ |\
 e d3// c// d B/ G/ | c B3// A// B E/ E/ | A G/ F/ G C/ C/ | c B3// A// G2 |]
     "#;
     let (input, notes) = parse_notes(input).unwrap();
-    let notes = notes
-        .iter()
-        .map(|note| note.tempo(4.))
-        .collect::<Vec<Note>>();
-    let score = Score { notes, tempo: 150 };
+    let score = Score {
+        notes,
+        tempo: 4. * 150.,
+    };
 
     thread::spawn(|| play_loop(score));
 

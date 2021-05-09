@@ -13,13 +13,13 @@ use super::note::Pitch;
 #[derive(Debug, Clone, PartialEq)]
 pub struct Score {
     pub notes: Vec<Note>,
-    pub tempo: u64,
+    pub tempo: f64,
 }
 
 impl Score {
     pub fn play(&self, conn_out: &mut midir::MidiOutputConnection) {
         for note in self.notes.clone() {
-            note.play(self.tempo, conn_out);
+            note.tempo(self.tempo).play(conn_out);
         }
     }
 }

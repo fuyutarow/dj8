@@ -342,7 +342,7 @@ impl Pitch {
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Note {
     pub pitch: Pitch,
-    pub duration: f32,
+    pub duration: f64,
 }
 
 impl Note {
@@ -351,7 +351,7 @@ impl Note {
         note
     }
 
-    pub fn tempo(&self, t: f32) -> Self {
+    pub fn tempo(&self, t: f64) -> Self {
         Self {
             pitch: self.pitch,
             duration: self.duration * t,
@@ -384,13 +384,13 @@ impl Note {
         ]
     }
 
-    pub fn play(&self, tempo: u64, conn_out: &mut midir::MidiOutputConnection) {
+    pub fn play(&self, conn_out: &mut midir::MidiOutputConnection) {
         let mut play_note = |note: u8, duration: u64| {
             const NOTE_ON_MSG: u8 = 0x90;
             const NOTE_OFF_MSG: u8 = 0x80;
             const VELOCITY: u8 = 0x64;
             let _ = conn_out.send(&[NOTE_ON_MSG, note, VELOCITY]);
-            thread::sleep(std::time::Duration::from_millis(duration * tempo));
+            thread::sleep(std::time::Duration::from_millis(duration));
             let _ = conn_out.send(&[NOTE_OFF_MSG, note, VELOCITY]);
         };
 

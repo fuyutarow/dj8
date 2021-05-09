@@ -57,12 +57,12 @@ pub fn parse_pitch<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
     Ok((input, p))
 }
 
-pub fn parse_duration<'a>(input: &'a str) -> IResult<&'a str, f32> {
+pub fn parse_duration<'a>(input: &'a str) -> IResult<&'a str, f64> {
     let (input, (number, slashes)) = tuple((many_m_n(0, 1, float), many0(tag("/"))))(input)?;
     let n = number.get(0).unwrap_or(&1.);
     let l = (1 << slashes.len()) as f32;
     let duration = n / l;
-    Ok((input, duration))
+    Ok((input, duration as f64))
 }
 
 pub fn parse_note<'a>(input: &'a str) -> IResult<&'a str, Note> {

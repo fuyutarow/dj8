@@ -1,3 +1,5 @@
+use std::thread;
+
 use anyhow::{bail, Result};
 pub use enum_primitive_derive::Primitive;
 use ghakuf::messages::Message;
@@ -5,6 +7,8 @@ use ghakuf::messages::Message::MidiEvent;
 use ghakuf::messages::MidiEvent::{ControlChange, NoteOff, NoteOn};
 pub use num_traits::{FromPrimitive, ToPrimitive};
 use parse_display::{Display, FromStr};
+
+use super::abc_parser::parse_note;
 
 pub mod prelude {
     pub use num_traits::{FromPrimitive, ToPrimitive};
@@ -342,6 +346,11 @@ pub struct Note {
 }
 
 impl Note {
+    pub fn from_abc(s: &str) -> Self {
+        let (_, note) = parse_note(s).unwrap();
+        note
+    }
+
     pub fn tempo(&self, t: f32) -> Self {
         Self {
             pitch: self.pitch,
@@ -373,5 +382,18 @@ impl Note {
                 },
             },
         ]
+    }
+
+    pub fn play(&self, tempo: u64, conn_out: &mut midir::MidiOutputConnection) {
+        let mut play_note = |note: u8, duration: u64| {
+            const NOTE_ON_MSG: u8 = 0x90;
+            const NOTE_OFF_MSG: u8 = 0x80;
+            const VELOCITY: u8 = 0x64;
+            let _ = conn_out.send(&[NOTE_ON_MSG, note, VELOCITY]);
+            thread::sleep(std::time::Duration::from_millis(duration * tempo));
+            let _ = conn_out.send(&[NOTE_OFF_MSG, note, VELOCITY]);
+        };
+
+        play_note(self.pitch as u8, self.duration as u64);
     }
 }

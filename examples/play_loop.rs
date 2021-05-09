@@ -21,9 +21,8 @@ e d3// c// d B/ G/ | c B3// A// B E/ E/ | A G/ F/ G C/ C/ | c B3// A// G2 |]
     let notes = notes
         .iter()
         .map(|note| note.tempo(4.))
-        .map(|note| note.to_pair())
-        .collect::<Vec<(u8, u64)>>();
-    let score = Score { notes };
+        .collect::<Vec<Note>>();
+    let score = Score { notes, tempo: 150 };
 
     thread::spawn(|| play_loop(score));
 
@@ -38,10 +37,11 @@ e d3// c// d B/ G/ | c B3// A// B E/ E/ | A G/ F/ G C/ C/ | c B3// A// G2 |]
 fn play_loop(score: Score) {
     match get_conn_out() {
         Ok(mut conn_out) => {
+            thread::sleep(std::time::Duration::from_millis(4 * 150));
             loop {
                 score.play(&mut conn_out);
             }
-            thread::sleep(time::Duration::from_millis(150));
+            thread::sleep(std::time::Duration::from_millis(4 * 150));
             conn_out.close();
         }
         Err(err) => println!("Error: {}", err),

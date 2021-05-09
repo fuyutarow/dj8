@@ -1,8 +1,3 @@
-use std::error::Error;
-use std::io::{stdin, stdout, Write};
-use std::thread;
-use std::time;
-
 use midir::{MidiOutput, MidiOutputConnection, MidiOutputPort};
 
 use cli::abc_parser::parse_notes;
@@ -19,10 +14,10 @@ fn main() {
 }
 
 fn play_loop() {
-    let mut tempo = 150.;
+    let mut tempo_p4 = 150.;
     match get_conn_out() {
         Ok(mut conn_out) => {
-            thread::sleep(std::time::Duration::from_millis(4 * 150));
+            std::thread::sleep(std::time::Duration::from_millis(4 * 150));
             loop {
                 println!("> ");
                 let mut input = String::new();
@@ -32,21 +27,21 @@ fn play_loop() {
 
                 match input.trim() {
                     s if s.starts_with("Q=") => {
-                        tempo = s
+                        tempo_p4 = s
                             .trim_start_matches("Q=")
                             .parse::<f64>()
                             .expect("unsigned interger");
-                        println!("tempo={}", tempo);
+                        println!("tempo={}", tempo_p4 * 4.);
                     }
                     s => {
                         let (_, notes) = parse_notes(&s).unwrap();
                         for note in notes {
-                            note.tempo(tempo).play(&mut conn_out);
+                            note.tempo(tempo_p4 * 4.).play(&mut conn_out);
                         }
                     }
                 }
             }
-            thread::sleep(std::time::Duration::from_millis(4 * 150));
+            std::thread::sleep(std::time::Duration::from_millis(4 * 150));
             conn_out.close();
         }
         Err(err) => println!("Error: {}", err),

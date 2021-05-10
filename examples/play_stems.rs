@@ -11,7 +11,7 @@ use cli::midi_env::MidiManager;
 use cli::note::prelude::*;
 use cli::note::Pitch;
 // use cli::note::{Note, Pitch};
-// use cli::score::{Score, MSG};
+use cli::score::MSG;
 
 #[derive(Debug, Clone)]
 pub struct Note {
@@ -197,10 +197,40 @@ fn main() {
 
     score.play(block.stem, &mut time);
 
-    let mut map = score.events;
-    let mut v: Vec<_> = map.into_iter().collect();
-    v.sort_by(|x, y| x.0.cmp(&y.0));
-    for (t, events) in v {
-        dbg!(t, events);
+    let mut events_block = score.events.into_iter().collect::<Vec<_>>();
+    events_block.sort_by(|x, y| x.0.cmp(&y.0));
+    play_block(events_block);
+}
+
+fn play_block(events_block: Vec<(u64, Vec<Event>)>) {
+    match get_conn_out() {
+        Ok(mut conn_out) => {
+            let mut time = 0;
+            let mut s = 0;
+
+            for (t, events) in events_block {
+                let duration = t - s;
+
+                for event in events {
+                    match event {
+                        Event::On(pitch) => {
+                            dbg!(duration, "on", pitch);
+                            let p = pitch.to_u8().unwrap();
+                            let _ = conn_out.send(&[MSG::NOTE_ON, p, MSG::VELOCITY]);
+                        }
+                        Event::Off(pitch) => {
+                            dbg!(duration, "off", pitch);
+                            let p = pitch.to_u8().unwrap();
+                            let _ = conn_out.send(&[MSG::NOTE_OFF, p, MSG::VELOCITY]);
+                        }
+                    }
+                }
+                let d = duration * 150;
+                std::thread::sleep(std::time::Duration::from_millis(d));
+
+                s = t;
+            }
+        }
+        Err(err) => println!("Error: {}", err),
     }
 }

@@ -12,8 +12,8 @@ use super::note::Note;
 use super::note::Pitch;
 
 pub mod MSG {
-    pub const NOTE_ON_MSG: u8 = 0x90;
-    pub const NOTE_OFF_MSG: u8 = 0x80;
+    pub const NOTE_ON: u8 = 0x90;
+    pub const NOTE_OFF: u8 = 0x80;
     pub const VELOCITY: u8 = 0x64;
 }
 
@@ -57,13 +57,13 @@ impl Chord {
     pub fn play(&self, conn_out: &mut MidiOutputConnection) {
         for note in &self.notes {
             let (pitch, duration) = note.to_pair();
-            let _ = conn_out.send(&[MSG::NOTE_ON_MSG, pitch, MSG::VELOCITY]);
+            let _ = conn_out.send(&[MSG::NOTE_ON, pitch, MSG::VELOCITY]);
         }
         // std::thread::sleep(std::time::Duration::from_millis(*duration * 4 * 150));
         std::thread::sleep(std::time::Duration::from_millis(self.duration as u64));
         for note in &self.notes {
             let (pitch, duration) = note.to_pair();
-            let _ = conn_out.send(&[MSG::NOTE_OFF_MSG, pitch, MSG::VELOCITY]);
+            let _ = conn_out.send(&[MSG::NOTE_OFF, pitch, MSG::VELOCITY]);
         }
     }
 }

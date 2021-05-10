@@ -29,7 +29,7 @@ pub fn parse_pitch<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
         many_m_n(
             0,
             1,
-            alt((tag("^"), tag("^^"), tag("_"), tag("__"), tag("="))),
+            alt((tag("^^"), tag("^"), tag("__"), tag("_"), tag("="))),
         ),
         alt((
             tag("C"),
@@ -47,12 +47,13 @@ pub fn parse_pitch<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
             tag("a"),
             tag("b"),
         )),
-        many_m_n(0, 1, alt((tag(","), tag("'")))),
+        many_m_n(0, 1, alt((tag(",,"), tag(","), tag("''"), tag("'")))),
     ))(input)?;
 
     let a = accidental.get(0).unwrap_or(&"");
     let o = octave.get(0).unwrap_or(&"");
     let pitch = format!("{}{}{}", a, basenote, o);
+    dbg!(&pitch);
     let p = Pitch::from_abc(&pitch);
     Ok((input, p))
 }

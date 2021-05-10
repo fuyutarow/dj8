@@ -9,12 +9,13 @@ pub use num_traits::{FromPrimitive, ToPrimitive};
 use parse_display::{Display, FromStr};
 
 use super::abc_parser::parse_note;
+use super::score::MSG;
 
 pub mod prelude {
     pub use num_traits::{FromPrimitive, ToPrimitive};
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Display, FromStr, Primitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Display, FromStr, Primitive, Eq, Hash)]
 pub enum Pitch {
     // C10 = 0,
     // Cs10 = 1,
@@ -407,6 +408,14 @@ impl Note {
             },
         ]
     }
+
+    // pub fn on(&self, conn_out: &mut midir::MidiOutputConnection) {
+    //     let _ = conn_out.send(&[MSG::NOTE_ON, pitch, MSG::VELOCITY]);
+    // }
+
+    // pub fn off(&self, conn_out: &mut midir::MidiOutputConnection) {
+    //     let _ = conn_out.send(&[MSG::NOTE_OFF, pitch, MSG::VELOCITY]);
+    // }
 
     pub fn play(&self, conn_out: &mut midir::MidiOutputConnection) {
         let mut play_note = |note: u8, duration: u64| {

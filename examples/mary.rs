@@ -11,65 +11,182 @@ use cli::note::prelude::*;
 use cli::note::{Note, Pitch};
 use cli::score::{Score, MSG};
 
+#[derive(Debug, Clone)]
 pub enum Stem {
-    Tuplet(Vec<Note>),
-    Chord(Vec<Note>),
+    Cat(Vec<Stem>),  // tuplet
+    Join(Vec<Stem>), // chord
+    Note(Note),
 }
 
+#[derive(Debug, Clone)]
 pub struct Block {
     pub stem: Stem,
     pub tempo: f64,
 }
 
-pub fn play_tuplet(notes: Vec<Note>, conn_out: &mut midir::MidiOutputConnection) {
-    for note in &notes {
-        note.tempo(4. * 150.).play(conn_out);
+// pub fn play_tuplet(notes: Vec<Note>, conn_out: &mut midir::MidiOutputConnection) {
+//     for note in &notes {
+//         note.tempo(4. * 150.).play(conn_out);
+//     }
+// }
+
+// fn play_chord(notes: Vec<Note>, conn_out: &mut MidiOutputConnection) {
+//     let (_, duration) = &notes.first().unwrap().to_pair();
+//     for note in &notes {
+//         let (pitch, duration) = note.to_pair();
+//         let _ = conn_out.send(&[MSG::NOTE_ON_MSG, pitch, MSG::VELOCITY]);
+//     }
+//     std::thread::sleep(std::time::Duration::from_millis(*duration * 4 * 150));
+//     for note in &notes {
+//         let (pitch, duration) = note.to_pair();
+//         let _ = conn_out.send(&[MSG::NOTE_OFF_MSG, pitch, MSG::VELOCITY]);
+//     }
+// }
+
+fn play_on(stem: Stem, conn_out: &mut MidiOutputConnection) {
+    match stem {
+        Stem::Note(note) => {
+            note.on(conn_out);
+        }
+        Stem::Cat(stems) => {
+            for stem in &stems {
+                play_on(stem);
+            }
+        }
+        Stem::Join(stems) => {
+            for stem in &stems {
+                play_on(stem);
+            }
+            let duration = 4 * 150;
+            std::thread::sleep(std::time::Duration::from_millis(duration));
+            for stem in &stems {
+                play_off(stem);
+            }
+        }
     }
 }
 
-fn play_chord(notes: Vec<Note>, conn_out: &mut MidiOutputConnection) {
-    let (_, duration) = &notes.first().unwrap().to_pair();
-    for note in &notes {
-        let (pitch, duration) = note.to_pair();
-        let _ = conn_out.send(&[MSG::NOTE_ON_MSG, pitch, MSG::VELOCITY]);
+fn play(stem: Stem, conn_out: &mut MidiOutputConnection) {
+    match stem {
+        Stem::Note(note) => {
+            note.on(conn_out);
+            let duration = 4 * 150;
+            std::thread::sleep(std::time::Duration::from_millis(duration));
+            note.off(conn_out);
+        }
+        Stem::Cat(stems) => {
+            for stem in &stems {
+                play(stem);
+                // play_on(stem);
+                // std::thread::sleep(std::time::Duration::from_millis(duration));
+                // play_off(stem);
+            }
+        }
+        Stem::Join(stems) => {
+            for stem in &stems {
+                play_on(stem);
+            }
+            let duration = 4 * 150;
+            std::thread::sleep(std::time::Duration::from_millis(duration));
+            for stem in &stems {
+                play_off(stem);
+            }
+        }
     }
-    std::thread::sleep(std::time::Duration::from_millis(*duration * 4 * 150));
-    for note in &notes {
-        let (pitch, duration) = note.to_pair();
-        let _ = conn_out.send(&[MSG::NOTE_OFF_MSG, pitch, MSG::VELOCITY]);
+}
+
+fn play_on(stem: Stem, conn_out: &mut MidiOutputConnection) {
+    match stem {
+        Stem::Note(note) => {
+            note.on(conn_out);
+            let duration = 4 * 150;
+            std::thread::sleep(std::time::Duration::from_millis(duration));
+            note.off(conn_out);
+        }
+        Stem::Cat(stems) => {
+            for stem in &stems {
+                play_on(stem);
+                play_off(stem);
+            }
+        }
+        Stem::Join(stems) => {
+            for stem in &stems {
+                play_on(stem);
+            }
+            let duration = 4 * 150;
+            std::thread::sleep(std::time::Duration::from_millis(duration));
+            for stem in &stems {
+                play_off(stem);
+            }
+        }
     }
 }
 
 impl Block {
     fn play(&self, conn_out: &mut midir::MidiOutputConnection) {
-        match &self.stem {
-            Stem::Tuplet(notes) => play_tuplet(notes.to_owned(), conn_out),
-            Stem::Chord(notes) => play_chord(notes.to_owned(), conn_out),
-        }
+        // match &self.stem {
+        //     Stem::Tuplet(stems) => {
+        //         play_tuplet(notes.to_owned(), conn_out);
+        //     }
+        //     Stem::Chord(stems) => {
+        //         play_tuplet(notes.to_owned(), conn_out);
+        //     }
+        //     Stem::Note(note) => play_chord(vec, conn_out: &mut MidiOutputConnection),
+        // }
     }
 }
 
 fn main() {
     let tempo_p4 = 102.;
-    let input = r#"
-AGFGAAA2GGG2Acc2 AGFGAAAAGGAGF4
-"#;
-    let (input, notes) = parse_notes(input).unwrap();
+    let melody = {
+        // AGFGAAA2GGG2Acc2 AGFGAAAAGGAGF4
+        let input = r#"AGFGAAA2GGG2"#;
+        let (input, notes) = parse_notes(input).unwrap();
+        Stem::Tuplet(
+            notes
+                .into_iter()
+                .map(|note| Stem::Note(note))
+                .collect::<Vec<Stem>>(),
+        )
+    };
+
+    let f_major = {
+        let input = r#"FAc"#;
+        let (input, notes) = parse_notes(input).unwrap();
+        Stem::Chord(
+            notes
+                .into_iter()
+                .map(|note| Stem::Note(note))
+                .collect::<Vec<Stem>>(),
+        )
+    };
+
+    let c_major = {
+        let input = r#"CEG"#;
+        let (input, notes) = parse_notes(input).unwrap();
+        Stem::Chord(
+            notes
+                .into_iter()
+                .map(|note| Stem::Note(note))
+                .collect::<Vec<Stem>>(),
+        )
+    };
+
+    let sub = Stem::Tuplet(vec![f_major.clone(), f_major.clone(), c_major]);
+
+    dbg!(sub);
 
     let block = Block {
-        stem: Stem::Tuplet(notes),
+        stem: melody,
         tempo: 4. * tempo_p4,
     };
-    play(block);
+    dbg!(block);
 
-    // play2(vec![score1, score2]);
-
-    // let mut time = 0;
-    // loop {
-    //     println!("hello @ {}", time);
-    //     std::thread::sleep(std::time::Duration::from_millis(1000));
-    //     time += 1
-    // }
+    // let block = Block {
+    //     stem: Stem::Chord(notes),
+    //     tempo: 4. * tempo_p4,
+    // };
+    // play(block);
 }
 
 fn play(block: Block) {

@@ -1,3 +1,6 @@
+[workspace]
+members = [".", "examples/web/dj8-wasm/"]
+
 [package]
 name = "dj8"
 version = "0.202105.2"

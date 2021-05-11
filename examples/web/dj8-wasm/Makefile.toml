@@ -1,0 +1,9 @@
+[tasks.release]
+script = '''
+wasm-pack build --release
+'''
+
+[tasks.build]
+script = '''
+wasm-pack build
+'''

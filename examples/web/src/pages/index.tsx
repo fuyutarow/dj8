@@ -5,25 +5,58 @@ import React, { useState, useEffect, useContext, useRef, useCallback } from 'rea
 import { OGP } from 'models/ogp';
 import { MetaHead } from 'components/Header';
 import { fact, getName } from 'workers/wasm.worker';
+import * as worker from 'workers/wasm.worker';
 
 const View: React.FC = () => {
   const [number, setNumber] = useState(0);
   const [name, setName] = useState("");
+  const [handle, setHandle] = useState<any>(null);
+
+  const Beep = () => {
+    return (
+      <button onClick={async () => {
+        // handleRef.current = await worker.beep();
+        const h = await worker.beep();
+        setHandle(h);
+      }}>beep</button>
+    )
+  }
+
+  const Stop = () => {
+    return (
+      <button onClick={async () => {
+        handle.free();
+        setHandle(null);
+      }}>stop</button>
+    )
+  }
 
   return (
     <div>
-      <div>ok</div>
-      <button onClick={() => alert('hello')}>greet</button>
-      <button onClick={async () => {
-        const res = await getName();
-        setName(res);
-      }}>getName</button>
-      <div>{name}</div>
-      <button onClick={async () => {
-        const res = await fact(10);
-        setNumber(res);
-      }}>calc</button>
-      <div>{number}</div>
+      <div>
+        <button onClick={() => alert('hello')}>greet</button>
+      </div>
+      <div>
+        {
+          handle
+            ? <Stop />
+            : <Beep />
+        }
+      </div>
+      <div>
+        <button onClick={async () => {
+          const res = await getName();
+          setName(res);
+        }}>getName</button>
+        <div>{name}</div>
+      </div>
+      <div>
+        <button onClick={async () => {
+          const res = await fact(10);
+          setNumber(res);
+        }}>calc</button>
+        <div>{number}</div>
+      </div>
     </div>
   )
 }

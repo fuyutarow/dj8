@@ -12,3 +12,8 @@ export const getName = async () => {
   const json = await res.json();
   return json[0];
 };
+
+export const beep = async () => {
+  const { beep } = await wasmImport;
+  return beep();
+};

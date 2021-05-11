@@ -1,5 +1,5 @@
 use ghakuf::messages::{Message, MetaEvent, MidiEvent, SysExEvent};
-use ghakuf::reader::{Handler, Reader};
+use ghakuf::reader::Handler;
 
 pub mod abc_parser;
 pub mod midi_env;

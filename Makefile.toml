@@ -2,3 +2,10 @@
 script = '''
 abc2midi data/soviet.abc -o data/soviet.mid && timidity $_
 '''
+
+[tasks.fix]
+script = '''
+# cargo fix
+cargo clippy
+cargo test
+'''

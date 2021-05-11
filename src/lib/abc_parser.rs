@@ -1,4 +1,3 @@
-use anyhow::bail;
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_till, take_while, take_while_m_n},
@@ -82,6 +81,6 @@ pub fn parse_skip_char<'a, E: ParseError<&'a str>>(i: &'a str) -> IResult<&'a st
 }
 
 pub fn parse_notes<'a>(input: &'a str) -> IResult<&'a str, Vec<Note>> {
-    let (input, mut notes) = many0(preceded(parse_skip_char, parse_note))(input)?;
+    let (input, notes) = many0(preceded(parse_skip_char, parse_note))(input)?;
     Ok((input, notes))
 }

@@ -1,8 +1,6 @@
 use std::default::Default;
 use std::error::Error;
 use std::io::{stdin, stdout, Write};
-use std::thread::sleep;
-use std::time::Duration;
 
 use midir::{MidiOutput, MidiOutputConnection, MidiOutputPort};
 
@@ -63,7 +61,7 @@ pub fn get_conn_out() -> Result<MidiOutputConnection, Box<dyn Error>> {
     };
     println!();
     println!("Opening connection");
-    let mut conn_out = midi_out.connect(out_port, "midir-test")?;
+    let conn_out = midi_out.connect(out_port, "midir-test")?;
     println!("Connection open. Listen!");
     Ok(conn_out)
 }

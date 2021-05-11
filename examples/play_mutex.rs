@@ -1,12 +1,8 @@
-use std::sync::{mpsc, Arc, Mutex};
-
-use midir::{MidiOutput, MidiOutputConnection, MidiOutputPort};
+use std::sync::{Arc, Mutex};
 
 use cli::abc_parser::parse_notes;
 use cli::midi_env::get_conn_out;
-use cli::midi_env::MidiManager;
-use cli::note::prelude::*;
-use cli::note::{Note, Pitch};
+
 use cli::score::Score;
 
 fn main() {
@@ -14,7 +10,7 @@ fn main() {
         let input = r#"
 G3/E C E G c2 e3/d c E ^F G2 GG e3/ d c B2 A B c c G E C
 "#;
-        let (input, notes) = parse_notes(input).unwrap();
+        let (_input, notes) = parse_notes(input).unwrap();
         Score {
             notes,
             tempo: 4. * 150.,
@@ -26,7 +22,7 @@ G3/E C E G c2 e3/d c E ^F G2 GG e3/ d c B2 A B c c G E C
 c G3// A// B E/ E/ | A G3// F// G C/ C/ | D D/ E/ F F/ G/ | A B/ c/ d3/ G/ |\
 e d3// c// d B/ G/ | c B3// A// B E/ E/ | A G/ F/ G C/ C/ | c B3// A// G2 |]
 "#;
-        let (input, notes) = parse_notes(input).unwrap();
+        let (_input, notes) = parse_notes(input).unwrap();
         Score {
             notes,
             tempo: 4. * 150.,
@@ -45,7 +41,7 @@ e d3// c// d B/ G/ | c B3// A// B E/ E/ | A G/ F/ G C/ C/ | c B3// A// G2 |]
 
 fn play2(scores: Vec<Score>) {
     match get_conn_out() {
-        Ok(mut conn_out) => {
+        Ok(conn_out) => {
             let conn = Arc::new(Mutex::new(conn_out));
             std::thread::sleep(std::time::Duration::from_millis(4 * 150));
 

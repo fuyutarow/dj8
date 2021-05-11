@@ -32,7 +32,7 @@ enum Opt {
 
 fn main() {
     match Opt::from_args() {
-        Opt::From { fpath, to, out } => {
+        Opt::From { fpath, to: _, out } => {
             let messages = match fpath.extension() {
                 Some(s) if s == "mid" => {
                     let mut read_messages: Vec<Message> = Vec::new();

@@ -1,10 +1,6 @@
-use midir::{MidiOutput, MidiOutputConnection, MidiOutputPort};
-
 use cli::abc_parser::parse_notes;
 use cli::midi_env::get_conn_out;
-use cli::midi_env::MidiManager;
-use cli::note::prelude::*;
-use cli::note::{Note, Pitch};
+
 use cli::score::Score;
 
 fn main() {
@@ -12,7 +8,7 @@ fn main() {
 c G3// A// B E/ E/ | A G3// F// G C/ C/ | D D/ E/ F F/ G/ | A B/ c/ d3/ G/ |\
 e d3// c// d B/ G/ | c B3// A// B E/ E/ | A G/ F/ G C/ C/ | c B3// A// G2 |]
     "#;
-    let (input, notes) = parse_notes(input).unwrap();
+    let (_input, notes) = parse_notes(input).unwrap();
     let score = Score {
         notes,
         tempo: 4. * 150.,

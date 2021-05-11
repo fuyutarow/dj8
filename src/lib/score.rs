@@ -1,15 +1,6 @@
-use std::error::Error;
-use std::io::{stdin, stdout, Write};
-use std::thread::sleep;
-use std::time::Duration;
-
 use midir::{MidiOutput, MidiOutputConnection, MidiOutputPort};
 
-use super::abc_parser::parse_notes;
-use super::midi_env::get_conn_out;
-use super::note::prelude::*;
 use super::note::Note;
-use super::note::Pitch;
 
 pub mod MSG {
     pub const NOTE_ON: u8 = 0x90;
@@ -56,13 +47,13 @@ impl Chord {
 
     pub fn play(&self, conn_out: &mut MidiOutputConnection) {
         for note in &self.notes {
-            let (pitch, duration) = note.to_pair();
+            let (pitch, _duration) = note.to_pair();
             let _ = conn_out.send(&[MSG::NOTE_ON, pitch, MSG::VELOCITY]);
         }
         // std::thread::sleep(std::time::Duration::from_millis(*duration * 4 * 150));
         std::thread::sleep(std::time::Duration::from_millis(self.duration as u64));
         for note in &self.notes {
-            let (pitch, duration) = note.to_pair();
+            let (pitch, _duration) = note.to_pair();
             let _ = conn_out.send(&[MSG::NOTE_OFF, pitch, MSG::VELOCITY]);
         }
     }

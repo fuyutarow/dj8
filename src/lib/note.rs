@@ -1,15 +1,14 @@
 use std::thread;
 
-use anyhow::{bail, Result};
+use anyhow::Result;
 pub use enum_primitive_derive::Primitive;
 use ghakuf::messages::Message;
 use ghakuf::messages::Message::MidiEvent;
-use ghakuf::messages::MidiEvent::{ControlChange, NoteOff, NoteOn};
+use ghakuf::messages::MidiEvent::{NoteOff, NoteOn};
 pub use num_traits::{FromPrimitive, ToPrimitive};
 use parse_display::{Display, FromStr};
 
 use super::abc_parser::parse_note;
-use super::score::MSG;
 
 pub mod prelude {
     pub use num_traits::{FromPrimitive, ToPrimitive};

@@ -29,3 +29,4 @@ crossbeam-channel = "0.5.1"
 crossbeam-utils = "0.8.3"
 priority-queue = "1.1.1"
 itertools = "0.10.0"
+synthrs = { git = "https://github.com/gyng/synthrs" }

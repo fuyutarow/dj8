@@ -9,3 +9,9 @@ script = '''
 cargo clippy
 cargo test
 '''
+
+[tasks.play-sine]
+script = '''
+cargo run --example synthrs
+afplay out/sine.wav
+'''

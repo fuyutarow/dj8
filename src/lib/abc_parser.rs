@@ -2,12 +2,13 @@ use anyhow::bail;
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_till, take_while, take_while_m_n},
-    character::complete::{digit1, multispace0, multispace1, one_of},
+    character::complete::{digit0, digit1, multispace0, multispace1, one_of},
     character::is_alphabetic,
     combinator::{cut, map, map_res, opt},
     error::{context, ParseError, VerboseError},
     multi::{many0, many_m_n},
     number::complete::float,
+    number::complete::i64 as parse_i64,
     sequence::{delimited, preceded, terminated, tuple},
     IResult, Parser,
 };
@@ -52,16 +53,21 @@ pub fn parse_pitch<'a>(input: &'a str) -> IResult<&'a str, Pitch> {
 
     let a = accidental.get(0).unwrap_or(&"");
     let o = octave.get(0).unwrap_or(&"");
+    dbg!(&a, &basenote, &o);
     let pitch = format!("{}{}{}", a, basenote, o);
-    dbg!(&pitch);
     let p = Pitch::from_abc(&pitch);
     Ok((input, p))
 }
 
 pub fn parse_duration<'a>(input: &'a str) -> IResult<&'a str, f64> {
-    let (input, (number, slashes)) = tuple((many_m_n(0, 1, float), many0(tag("/"))))(input)?;
-    let n = number.get(0).unwrap_or(&1.);
-    let l = (1 << slashes.len()) as f32;
+    // let (input, (number, slashes)) = tuple((many_m_n(0, 1, float), many0(tag("/"))))(input)?;
+
+    let parser_integer = map_res(digit0, |s: &str| s.parse::<u64>());
+    let (input, (number, slashes)) =
+        tuple((many_m_n(0, 1, parser_integer), many0(tag("/"))))(input)?;
+    dbg!(&number, &slashes);
+    let n = number.get(0).unwrap_or(&1).to_owned() as f64;
+    let l = (1 << slashes.len()) as f64;
     let duration = n / l;
     Ok((input, duration as f64))
 }

@@ -153,4 +153,39 @@ A G3// F// G C/ C/ |]
         ],
         notes
     );
+
+    let input = "D4C";
+    let (input, notes) = parse_notes(input).unwrap();
+    assert_eq!(
+        vec![
+            Note {
+                pitch: Pitch::D4,
+                duration: 4.,
+            },
+            Note {
+                pitch: Pitch::C4,
+                duration: 1.,
+            },
+        ],
+        notes,
+    );
+}
+
+#[test]
+fn test_parse_as_an_integer_not_a_float() {
+    let input = "C4e2";
+    let (input, notes) = parse_notes(input).unwrap();
+    assert_eq!(
+        vec![
+            Note {
+                pitch: Pitch::C4,
+                duration: 4.,
+            },
+            Note {
+                pitch: Pitch::E5,
+                duration: 2.,
+            },
+        ],
+        notes,
+    );
 }

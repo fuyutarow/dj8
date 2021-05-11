@@ -63,7 +63,7 @@ impl Chord {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Stem {
     Cat(Vec<Stem>),  // tuplet
     Join(Vec<Stem>), // chord

@@ -12,105 +12,7 @@ use cli::midi_env::MidiManager;
 use cli::note::prelude::*;
 use cli::note::{Note, Pitch};
 use cli::score::MSG;
-
-#[derive(Debug, Clone)]
-pub enum Stem {
-    Cat(Vec<Stem>),  // tuplet
-    Join(Vec<Stem>), // chord
-    Note(Note),
-}
-
-impl Stem {
-    fn cat_from_abc(input: &str) -> Self {
-        let (input, notes) = parse_notes(input).unwrap();
-        let stems = notes
-            .into_iter()
-            .map(|note| Stem::Note(note))
-            .collect::<Vec<_>>();
-        Self::Cat(stems)
-    }
-
-    fn join_from_abc(input: &str) -> Self {
-        let (input, notes) = parse_notes(input).unwrap();
-        let stems = notes
-            .into_iter()
-            .map(|note| Stem::Note(note))
-            .collect::<Vec<_>>();
-        Self::Join(stems)
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct Block {
-    pub stem: Stem,
-    pub tempo: f64,
-}
-
-#[derive(Debug, Clone, Hash)]
-pub enum Event {
-    On(Pitch),
-    Off(Pitch),
-}
-
-impl PartialEq for Event {
-    fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            (Event::On(pitch1), Event::On(pitch2)) => pitch1 == pitch2,
-            (Event::Off(pitch1), Event::Off(pitch2)) => pitch1 == pitch2,
-            _ => false,
-        }
-    }
-}
-impl Eq for Event {}
-
-#[derive(Debug, Clone)]
-struct Score {
-    pub events: HashMap<u64, Vec<Event>>,
-    pub times: BinaryHeap<u64>,
-}
-
-impl Score {
-    fn play<'a>(&'a mut self, stem: Stem, time: &'a mut f64) -> &'a mut f64 {
-        match stem {
-            Stem::Note(note) => {
-                let t = (*time).floor().abs() as u64;
-                self.events
-                    .entry(t)
-                    .or_insert(vec![])
-                    .push(Event::On(note.pitch));
-                self.times.push(t);
-
-                *time += note.duration;
-                let t = (*time).floor().abs() as u64;
-                self.events
-                    .entry(t)
-                    .or_insert(vec![])
-                    .push(Event::Off(note.pitch));
-                self.times.push(t);
-                time
-            }
-            Stem::Cat(stems) => {
-                for stem in &stems {
-                    *time = *self.play(stem.clone(), time);
-                }
-                time
-            }
-            Stem::Join(stems) => {
-                let current_time = time.clone();
-
-                let mut v = Vec::<u64>::new();
-                for stem in &stems {
-                    let ti = *self.play(stem.clone(), &mut current_time.clone());
-                    let t = ti.floor().abs() as u64;
-                    v.push(t);
-                }
-
-                *time = (*v.iter().max().unwrap()) as f64;
-                time
-            }
-        }
-    }
-}
+use cli::score::{Block, Event, Sequence, Stem};
 
 fn main() {
     let f_major = Stem::Join(vec![
@@ -180,7 +82,7 @@ fn main() {
             ]),
         ]),
     };
-    let mut score = Score {
+    let mut score = Sequence {
         events: HashMap::<u64, Vec<Event>>::new(),
         times: BinaryHeap::<u64>::new(),
         // tempo: 4 * 150,

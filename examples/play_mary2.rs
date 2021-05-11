@@ -1,5 +1,7 @@
 use crossbeam_channel::{bounded, select};
 use crossbeam_utils::thread;
+use itertools;
+use itertools::Itertools;
 use midir::{MidiOutput, MidiOutputConnection, MidiOutputPort};
 use priority_queue::PriorityQueue;
 use std::collections::BinaryHeap;
@@ -20,15 +22,31 @@ fn main() {
 
     let block = Block {
         tempo: 1000.,
-        stem: Stem::Cat(vec![
-            Stem::Join(vec![Stem::cat_from_abc("AGFG"), f_major.clone()]),
-            Stem::Join(vec![Stem::cat_from_abc("AAA2"), f_major.clone()]),
-            Stem::Join(vec![Stem::cat_from_abc("GGG2"), c_major.clone()]),
-            Stem::Join(vec![Stem::cat_from_abc("Acc2"), f_major.clone()]),
-            Stem::Join(vec![Stem::cat_from_abc("AGFG"), f_major.clone()]),
-            Stem::Join(vec![Stem::cat_from_abc("AAAA"), f_major.clone()]),
-            Stem::Join(vec![Stem::cat_from_abc("GGAG"), c_major.clone()]),
-            Stem::Join(vec![Stem::cat_from_abc("F4"), f_major.clone()]),
+        stem: Stem::Join(vec![
+            Stem::Cat(vec![
+                Stem::cat_from_abc("AGFG"),
+                Stem::cat_from_abc("AAA2"),
+                Stem::cat_from_abc("GGG2"),
+                Stem::cat_from_abc("Acc2"),
+                Stem::cat_from_abc("AGFG"),
+                Stem::cat_from_abc("AAAA"),
+                Stem::cat_from_abc("GGAG"),
+                Stem::cat_from_abc("F4"),
+            ]),
+            Stem::Cat(
+                itertools::repeat_n(
+                    vec![
+                        f_major.clone(),
+                        f_major.clone(),
+                        c_major.clone(),
+                        f_major.clone(),
+                    ]
+                    .into_iter(),
+                    2,
+                )
+                .flatten()
+                .collect::<Vec<_>>(),
+            ),
         ]),
     };
     let mut score = Sequence {

@@ -361,6 +361,14 @@ impl Pitch {
     pub fn to_abc(&self) -> String {
         AbcPitch::from(self.clone()).to_string()
     }
+
+    pub fn to_freq(&self) -> f64 {
+        let midi_number = self.to_i32().unwrap();
+        dbg!(&midi_number);
+        const a4_midi_number: i32 = 69;
+        const a4_midi_freq: f64 = 440.;
+        a4_midi_freq * 2f64.powf((midi_number - a4_midi_number) as f64 / 12.)
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]

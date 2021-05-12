@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::Stream;
 use wasm_bindgen::prelude::*;
@@ -86,6 +88,22 @@ pub fn beep() -> Handle {
         cpal::SampleFormat::I16 => run::<i16>(&device, &config.into()),
         cpal::SampleFormat::U16 => run::<u16>(&device, &config.into()),
     })
+}
+
+#[wasm_bindgen]
+pub struct Handle2(rodio::Sink, rodio::OutputStream);
+
+#[wasm_bindgen]
+pub fn play_music() -> Handle2 {
+    let bytes = include_bytes!("../../assets/music.flac");
+    let (stream, handle) = rodio::OutputStream::try_default().unwrap();
+    let sink = rodio::Sink::try_new(&handle).unwrap();
+    let c: Cursor<&[u8]> = Cursor::new(bytes);
+    let decoder = rodio::Decoder::new(c).unwrap();
+    sink.append(decoder);
+    console::log_1(&"started playback".into());
+    println!("Started playback");
+    Handle2(sink, stream)
 }
 
 fn run<T>(device: &cpal::Device, config: &cpal::StreamConfig) -> Stream

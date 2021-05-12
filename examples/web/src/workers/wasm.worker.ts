@@ -17,3 +17,8 @@ export const beep = async () => {
   const { beep } = await wasmImport;
   return beep();
 };
+
+export const play_music = async () => {
+  const { play_music } = await wasmImport;
+  return play_music();
+};

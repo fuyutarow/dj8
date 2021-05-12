@@ -11,6 +11,7 @@ const View: React.FC = () => {
   const [number, setNumber] = useState(0);
   const [name, setName] = useState("");
   const [handle, setHandle] = useState<any>(null);
+  const [handle2, setHandle2] = useState<any>(null);
 
   const Beep = () => {
     return (
@@ -41,6 +42,23 @@ const View: React.FC = () => {
           handle
             ? <Stop />
             : <Beep />
+        }
+      </div>
+      <div>
+        {
+          handle2
+            ? (
+              <button onClick={async () => {
+                handle2.free();
+                setHandle2(null);
+              }}>stop music</button>
+            )
+            : (
+              <button onClick={async () => {
+                const h = await worker.play_music();
+                setHandle2(h);
+              }}>play music</button>
+            )
         }
       </div>
       <div>

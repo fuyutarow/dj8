@@ -30,3 +30,9 @@ crossbeam-utils = "0.8.3"
 priority-queue = "1.1.1"
 itertools = "0.10.0"
 synthrs = { git = "https://github.com/gyng/synthrs" }
+rodio = { version = "0.13.1", default-features = false }
+cpal = "0.13.3"
+
+[features]
+mp3 = ["rodio/mp3"]
+wasm-bindgen = ["cpal/wasm-bindgen", "rodio/wasm-bindgen"]

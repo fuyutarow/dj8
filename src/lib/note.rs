@@ -364,7 +364,6 @@ impl Pitch {
 
     pub fn to_freq(&self) -> f64 {
         let midi_number = self.to_i32().unwrap();
-        dbg!(&midi_number);
         const a4_midi_number: i32 = 69;
         const a4_midi_freq: f64 = 440.;
         a4_midi_freq * 2f64.powf((midi_number - a4_midi_number) as f64 / 12.)
@@ -435,5 +434,13 @@ impl Note {
         };
 
         play_note(self.pitch as u8, self.duration as u64);
+    }
+
+    pub fn to_samples(&self, sample_rate: usize) -> Vec<f64> {
+        synthrs::synthesizer::make_samples(
+            self.duration,
+            sample_rate,
+            synthrs::wave::sine_wave(self.pitch.to_freq()),
+        )
     }
 }

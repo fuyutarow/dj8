@@ -94,3 +94,57 @@ pub fn get_audio_env() -> anyhow::Result<((Host, Device, SupportedStreamConfig))
 
     Ok((host, device, config))
 }
+
+pub fn build_stream(
+    device: cpal::Device,
+    supported_config: cpal::SupportedStreamConfig,
+    samples: Vec<f64>, // next_sample: &mut dyn FnMut() -> f32,
+) -> anyhow::Result<cpal::Stream> {
+    let stream = match supported_config.sample_format() {
+        cpal::SampleFormat::F32 => {
+            build_stream_helper::<f32>(&device, &supported_config.into(), samples)
+        }
+        cpal::SampleFormat::I16 => {
+            build_stream_helper::<i16>(&device, &supported_config.into(), samples)
+        }
+        cpal::SampleFormat::U16 => {
+            build_stream_helper::<u16>(&device, &supported_config.into(), samples)
+        }
+    }?;
+    Ok(stream)
+}
+
+fn build_stream_helper<T>(
+    device: &cpal::Device,
+    config: &cpal::StreamConfig,
+    samples: Vec<f64>,
+) -> anyhow::Result<cpal::Stream>
+where
+    T: cpal::Sample,
+{
+    let mut next_value = samples.into_iter().map(|f| f as f32);
+    let mut next_sample = move || next_value.next().unwrap();
+
+    let err_fn = |err| eprintln!("an error occurred on stream: {}", err);
+    let channels = config.channels as usize;
+    let stream = device.build_output_stream(
+        config,
+        move |data: &mut [T], _: &cpal::OutputCallbackInfo| {
+            write_data(data, channels, &mut next_sample)
+        },
+        err_fn,
+    )?;
+    Ok(stream)
+}
+
+fn write_data<T>(output: &mut [T], channels: usize, next_sample: &mut dyn FnMut() -> f32)
+where
+    T: cpal::Sample,
+{
+    for frame in output.chunks_mut(channels) {
+        let value: T = cpal::Sample::from::<f32>(&next_sample());
+        for sample in frame.iter_mut() {
+            *sample = value;
+        }
+    }
+}

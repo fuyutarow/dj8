@@ -16,6 +16,10 @@ e d3// c// d B/ G/ | c B3// A// B E/ E/ | A G/ F/ G C/ C/ | c B3// A// G2 |]
 
     std::thread::spawn(|| play_loop(score));
 
+    timer()
+}
+
+fn timer() {
     let mut time = 0;
     loop {
         println!("hello @ {}", time);

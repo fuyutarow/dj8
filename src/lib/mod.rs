@@ -2,6 +2,7 @@ use ghakuf::messages::{Message, MetaEvent, MidiEvent, SysExEvent};
 use ghakuf::reader::Handler;
 
 pub mod abc_parser;
+pub mod audio_env;
 pub mod midi_env;
 pub mod note;
 pub mod score;

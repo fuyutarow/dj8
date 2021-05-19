@@ -11,7 +11,7 @@ use dj8::note::prelude::*;
 use dj8::note::{Note, Pitch};
 use dj8::score::Score;
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn _main() -> anyhow::Result<()> {
     let (sender, receiver) = bounded(1);
 
     let mut conn_out = get_conn_out()?;

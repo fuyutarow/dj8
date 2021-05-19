@@ -4,7 +4,7 @@ use crossbeam_utils::thread;
 use dj8::abc_parser::parse_notes;
 use dj8::midi_env::get_conn_out;
 
-fn main() {
+fn _main() {
     let (sender, receiver) = bounded(1); // Make room for one unmatched send.
 
     thread::scope(|scope| {
@@ -32,7 +32,7 @@ fn main() {
         // let s = input.clone();
 
         let mut s = String::from("c");
-        // sender.send(&s).unwrap();
+        sender.send(&s).unwrap();
         // println!("{}", input);
     }
 

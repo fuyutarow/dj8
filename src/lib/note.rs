@@ -458,7 +458,6 @@ where
         let sample_value = synthrs::synthesizer::generate(t, &waveform);
         samples.push(sample_value);
     }
-    dbg!(samples.len());
 
     samples
 }

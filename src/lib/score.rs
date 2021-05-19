@@ -100,18 +100,12 @@ impl Stem {
                 .flatten()
                 .collect::<Vec<_>>(),
             Stem::Join(stems) => {
-                dbg!(&stems);
                 let v = stems
                     .into_iter()
                     .map(|stem| stem.to_samples(samples_per_ticks))
                     .collect::<Vec<_>>();
-                for i in 0..v.len() {
-                    dbg!(v[i].len());
-                }
                 let (xlen, ylen) = (v.len(), v[0].len());
-
                 let vv = v.into_iter().flatten().collect::<Vec<_>>();
-                dbg!(xlen, ylen, vv.len());
                 let arr = ndarray::Array::from_shape_vec((xlen, ylen), vv).unwrap();
                 arr.sum_axis(ndarray::Axis(0)).to_vec()
             }

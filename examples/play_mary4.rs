@@ -11,9 +11,9 @@ fn main() -> anyhow::Result<()> {
     let config = cpal::StreamConfig::from(supported_config.clone());
 
     let sample_sec = 5.0;
-    let sample_rate = config.sample_rate.0 as usize;
+    let sample_rate = config.sample_rate.0;
     let beat = 1.;
-    let bps = 132.;
+    let bps = 121.;
     let tempo = 60. / bps * beat;
     // let stem = Stem::cat_from_abc("A//G//F//G//");
     let c_major = Stem::join_from_abc("C,4E,4G,4");
@@ -30,7 +30,8 @@ fn main() -> anyhow::Result<()> {
         Stem::Join(vec![Stem::cat_from_abc("F4"), f_major.clone()]),
     ]);
 
-    let samples = stem.to_samples(sample_rate);
+    let samples_per_tick = (tempo * sample_rate as f64 / 256.).floor() as usize;
+    let samples = stem.to_samples(samples_per_tick);
     dbg!(samples.len());
     let stream = build_stream(device, supported_config, samples)?;
     stream.play()?;

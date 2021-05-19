@@ -6,6 +6,9 @@ name = "dj8"
 version = "0.202105.3"
 authors = ["fuyutarow <fuyutarow@gmail.com>"]
 edition = "2018"
+description = "A tool for playing musics"
+homepage = "https://github.com/fuyutarow/dj8"
+repository = "https://github.com/fuyutarow/dj8.git"
 
 [lib]
 name = "dj8"

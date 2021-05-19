@@ -361,6 +361,13 @@ impl Pitch {
     pub fn to_abc(&self) -> String {
         AbcPitch::from(self.clone()).to_string()
     }
+
+    pub fn to_freq(&self) -> f64 {
+        let midi_number = self.to_i32().unwrap();
+        const a4_midi_number: i32 = 69;
+        const a4_midi_freq: f64 = 440.;
+        a4_midi_freq * 2f64.powf((midi_number - a4_midi_number) as f64 / 12.)
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -428,4 +435,29 @@ impl Note {
 
         play_note(self.pitch as u8, self.duration as u64);
     }
+
+    pub fn to_samples(&self, n_samples: usize) -> Vec<f64> {
+        make_samples(
+            self.duration,
+            n_samples,
+            synthrs::wave::sine_wave(self.pitch.to_freq()),
+        )
+    }
+}
+
+pub fn make_samples<F>(length: f64, samples_per_tick: usize, waveform: F) -> Vec<f64>
+where
+    F: Fn(f64) -> f64,
+{
+    let n_samples = (samples_per_tick as f64 * 256. * length).floor() as usize;
+    let sample_rate = (n_samples as f64 / length).floor() as usize;
+    let mut samples: Vec<f64> = Vec::with_capacity(n_samples);
+
+    for i in 0usize..n_samples {
+        let t = i as f64 / sample_rate as f64;
+        let sample_value = synthrs::synthesizer::generate(t, &waveform);
+        samples.push(sample_value);
+    }
+
+    samples
 }

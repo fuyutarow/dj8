@@ -1,7 +1,7 @@
-use cli::abc_parser::parse_notes;
-use cli::midi_env::get_conn_out;
+use dj8::abc_parser::parse_notes;
+use dj8::midi_env::get_conn_out;
 
-use cli::score::Score;
+use dj8::score::Score;
 
 fn main() {
     let input = r#"
@@ -16,6 +16,10 @@ e d3// c// d B/ G/ | c B3// A// B E/ E/ | A G/ F/ G C/ C/ | c B3// A// G2 |]
 
     std::thread::spawn(|| play_loop(score));
 
+    timer()
+}
+
+fn timer() {
     let mut time = 0;
     loop {
         println!("hello @ {}", time);

@@ -1,11 +1,14 @@
+[workspace]
+members = [".", "examples/web/dj8-wasm/"]
+
 [package]
 name = "dj8"
-version = "0.202105.2"
+version = "0.202105.3"
 authors = ["fuyutarow <fuyutarow@gmail.com>"]
 edition = "2018"
 
 [lib]
-name = "cli"
+name = "dj8"
 path = "src/lib/mod.rs"
 
 [dependencies]
@@ -26,3 +29,15 @@ crossbeam-channel = "0.5.1"
 crossbeam-utils = "0.8.3"
 priority-queue = "1.1.1"
 itertools = "0.10.0"
+synthrs = { git = "https://github.com/gyng/synthrs" }
+rodio = { version = "0.13.1", default-features = false }
+cpal = "0.13.3"
+clap = { version = "2.33.3", default-features = false }
+futures = "0.3.15"
+docopt = "1.1.1"
+serde_derive = "1.0.125"
+ndarray = "0.15.1"
+
+[features]
+mp3 = ["rodio/mp3"]
+wasm-bindgen = ["cpal/wasm-bindgen", "rodio/wasm-bindgen"]

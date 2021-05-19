@@ -1,11 +1,11 @@
 use midir::{MidiOutput, MidiOutputConnection, MidiOutputPort};
 
-use cli::abc_parser::parse_notes;
-use cli::midi_env::get_conn_out;
-use cli::midi_env::MidiManager;
-use cli::note::prelude::*;
-use cli::note::{Note, Pitch};
-use cli::score::Score;
+use dj8::abc_parser::parse_notes;
+use dj8::midi_env::get_conn_out;
+use dj8::midi_env::MidiManager;
+use dj8::note::prelude::*;
+use dj8::note::{Note, Pitch};
+use dj8::score::Score;
 
 fn main() {
     // std::thread::spawn(|| play_loop(score));

@@ -4,8 +4,8 @@ use std::path::Path;
 use ghakuf::messages::Message;
 use ghakuf::writer::Writer;
 
-use cli::abc_parser::parse_notes;
-// use cli::midi_env::setup_midi_conn_out;
+use dj8::abc_parser::parse_notes;
+// use dj8::midi_env::setup_midi_conn_out;
 
 fn main() {
     let input = r#"

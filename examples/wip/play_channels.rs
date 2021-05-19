@@ -1,9 +1,9 @@
 use std::sync::mpsc;
 
-use cli::abc_parser::parse_notes;
-use cli::midi_env::get_conn_out;
+use dj8::abc_parser::parse_notes;
+use dj8::midi_env::get_conn_out;
 
-fn main() {
+fn _main() {
     let (sender_to_sub, receiver_from_main) = mpsc::channel();
 
     std::thread::spawn(move || {

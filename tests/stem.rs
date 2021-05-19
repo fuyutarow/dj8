@@ -1,5 +1,5 @@
-use cli::note::{Note, Pitch};
-use cli::score::Stem;
+use dj8::note::{Note, Pitch};
+use dj8::score::Stem;
 
 #[test]
 fn test_c_major() {

@@ -1,9 +1,9 @@
 use std::sync::{Arc, Mutex};
 
-use cli::abc_parser::parse_notes;
-use cli::midi_env::get_conn_out;
+use dj8::abc_parser::parse_notes;
+use dj8::midi_env::get_conn_out;
 
-use cli::score::Score;
+use dj8::score::Score;
 
 fn main() {
     let score1 = {

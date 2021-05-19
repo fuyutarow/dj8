@@ -1,17 +1,28 @@
-use cli::note::prelude::*;
-use cli::note::{AbcPitch, Pitch};
+use dj8::note::prelude::*;
+use dj8::note::{AbcPitch, Pitch};
 
 #[test]
-fn note() {
+fn parse_pitch() {
     let note = "C4".parse::<Pitch>();
     assert_eq!(note, Ok(Pitch::C4));
     assert_eq!(note.unwrap().to_string(), "C4");
+}
 
+#[test]
+fn pitch_midi_number() {
     let note = Pitch::C4;
     assert_eq!(note.to_i32(), Some(60));
 
     let note = Pitch::from_i32(60);
     assert_eq!(note, Some(Pitch::C4));
+}
+
+#[test]
+fn pitch_freq() {
+    assert_eq!(880., (Pitch::A5.to_freq() * 1000.).round() / 1000.);
+    assert_eq!(440., (Pitch::A4.to_freq() * 1000.).round() / 1000.);
+    assert_eq!(261.626, (Pitch::C4.to_freq() * 1000.).round() / 1000.);
+    assert_eq!(220., (Pitch::A3.to_freq() * 1000.).round() / 1000.);
 }
 
 #[test]

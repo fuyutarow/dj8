@@ -1,8 +1,8 @@
 use std::error::Error;
 
-use cli::midi_env::get_conn_out;
+use dj8::midi_env::get_conn_out;
 
-use cli::note::Note;
+use dj8::note::Note;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut conn_out = get_conn_out()?;

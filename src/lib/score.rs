@@ -1,7 +1,9 @@
 use std::collections::BinaryHeap;
 use std::collections::HashMap;
 
+use itertools::izip;
 use midir::{MidiOutput, MidiOutputConnection, MidiOutputPort};
+use ndarray::Array;
 
 use super::abc_parser::parse_notes;
 use super::note::{Note, Pitch};
@@ -87,6 +89,27 @@ impl Stem {
             .map(|note| Stem::Note(note))
             .collect::<Vec<_>>();
         Self::Join(stems)
+    }
+
+    pub fn to_samples(&self, samples_per_ticks: usize) -> Vec<f64> {
+        match &self {
+            Stem::Note(note) => note.to_samples(samples_per_ticks),
+            Stem::Cat(stems) => stems
+                .into_iter()
+                .map(|stem| stem.to_samples(samples_per_ticks))
+                .flatten()
+                .collect::<Vec<_>>(),
+            Stem::Join(stems) => {
+                let v = stems
+                    .into_iter()
+                    .map(|stem| stem.to_samples(samples_per_ticks))
+                    .collect::<Vec<_>>();
+                let (xlen, ylen) = (v.len(), v[0].len());
+                let vv = v.into_iter().flatten().collect::<Vec<_>>();
+                let arr = ndarray::Array::from_shape_vec((xlen, ylen), vv).unwrap();
+                arr.sum_axis(ndarray::Axis(0)).to_vec()
+            }
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-use cli::{
+use dj8::{
     abc_parser::{parse_basenote, parse_duration, parse_note, parse_notes, parse_pitch},
     note::Pitch::*,
     note::{Note, Pitch},

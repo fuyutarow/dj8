@@ -1,10 +1,10 @@
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use synthrs::synthesizer::{make_samples_from_midi_file, quantize};
 
-use cli::audio_env::build_stream;
-use cli::audio_env::get_audio_env;
-use cli::note::{Note, Pitch};
-use cli::score::Stem;
+use dj8::audio_env::build_stream;
+use dj8::audio_env::get_audio_env;
+use dj8::note::{Note, Pitch};
+use dj8::score::Stem;
 
 fn main() -> anyhow::Result<()> {
     let (host, device, supported_config) = get_audio_env()?;

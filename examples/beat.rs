@@ -8,10 +8,10 @@ use ghakuf::messages::Message;
 use ghakuf::writer::Writer;
 use midir::{MidiOutput, MidiOutputPort};
 
-use cli::abc_parser::parse_notes;
-use cli::note::prelude::*;
-use cli::note::{Note, Pitch};
-use cli::score::Score;
+use dj8::abc_parser::parse_notes;
+use dj8::note::prelude::*;
+use dj8::note::{Note, Pitch};
+use dj8::score::Score;
 
 fn main() {
     let input = (0..10).map(|_| "c/").collect::<String>();

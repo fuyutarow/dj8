@@ -1,8 +1,8 @@
 use crossbeam_channel::{bounded, select};
 use crossbeam_utils::thread;
 
-use cli::abc_parser::parse_notes;
-use cli::midi_env::get_conn_out;
+use dj8::abc_parser::parse_notes;
+use dj8::midi_env::get_conn_out;
 
 fn main() {
     let (sender, receiver) = bounded(1); // Make room for one unmatched send.
@@ -32,7 +32,7 @@ fn main() {
         // let s = input.clone();
 
         let mut s = String::from("c");
-        sender.send(&s).unwrap();
+        // sender.send(&s).unwrap();
         // println!("{}", input);
     }
 

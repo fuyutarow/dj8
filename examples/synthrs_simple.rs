@@ -102,7 +102,7 @@ fn main() {
         44_100,
         &quantize_samples::<i16>(&make_samples(1.0, 44_100, |t: f64| -> f64 {
             let (min_f, max_f) = (1000.0, 8000.0);
-            let max_t = 1.0; // Duration of clip in seconds
+            let max_t = 1.0; // Duration of dj8p in seconds
             let range = max_f - min_f;
             let f = max_f - (max_t - t) * range;
             sine_wave(f)(t)

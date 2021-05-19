@@ -5,8 +5,8 @@ use std::time::Duration;
 
 use midir::{MidiOutput, MidiOutputPort};
 
-use cli::note::prelude::*;
-use cli::note::Pitch;
+use dj8::note::prelude::*;
+use dj8::note::Pitch;
 
 struct Score {
     notes: Vec<(u8, u64)>,

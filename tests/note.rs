@@ -1,5 +1,5 @@
-use cli::note::prelude::*;
-use cli::note::{AbcPitch, Pitch};
+use dj8::note::prelude::*;
+use dj8::note::{AbcPitch, Pitch};
 
 #[test]
 fn parse_pitch() {

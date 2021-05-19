@@ -1,9 +1,9 @@
 use midir::MidiOutputConnection;
 
-use cli::abc_parser::parse_notes;
-use cli::midi_env::get_conn_out;
+use dj8::abc_parser::parse_notes;
+use dj8::midi_env::get_conn_out;
 
-use cli::score::Chord;
+use dj8::score::Chord;
 
 fn main() {
     match get_conn_out() {

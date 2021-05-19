@@ -3,12 +3,12 @@ members = [".", "examples/web/dj8-wasm/"]
 
 [package]
 name = "dj8"
-version = "0.202105.2"
+version = "0.202105.3"
 authors = ["fuyutarow <fuyutarow@gmail.com>"]
 edition = "2018"
 
 [lib]
-name = "cli"
+name = "dj8"
 path = "src/lib/mod.rs"
 
 [dependencies]

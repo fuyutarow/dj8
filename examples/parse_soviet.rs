@@ -3,7 +3,7 @@ use ghakuf::reader::Reader;
 use ghakuf::writer::Writer;
 use std::path::Path;
 
-use cli::BasicHandler;
+use dj8::BasicHandler;
 
 fn main() {
     let mut read_messages: Vec<Message> = Vec::new();
